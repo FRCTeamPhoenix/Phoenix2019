@@ -134,9 +134,13 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    talonFR.set(ControlMode.MotionMagic, 5);
+    //talonFR.set(ControlMode.MotionMagic, 5);
     //talonFR.set(ControlMode.PercentOutput, driverJoystick.getRawAxis(Constants.XBOX_AXIS_RIGHT_Y));
     //talonFL.set(ControlMode.PercentOutput, driverJoystick.getRawAxis(Constants.XBOX_AXIS_LEFT_Y));
+    if(operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_X)) {
+      talonFR.setSelectedSensorPosition(0, 0, 10);
+      talonFL.setSelectedSensorPosition(0, 0, 10);
+    }
   }
 
   /**
