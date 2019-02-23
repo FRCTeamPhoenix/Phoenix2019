@@ -27,6 +27,11 @@ public class TankDrive extends Subsystem {
 
     }
 
+    public void setMotionMagic(double left, double right) {
+        talonFL.set(ControlMode.MotionMagic, left);
+        talonFR.set(ControlMode.MotionMagic, right);
+    }
+
     //configures base talons
     private void configureTalons() {
 
