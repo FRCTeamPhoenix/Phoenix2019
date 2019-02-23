@@ -158,50 +158,16 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
 
-    if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_A)) {
-      //Scheduler.getInstance().removeAll();
-      Scheduler.getInstance().add(new ParkManeuver(this, driverJoystick, tankDrive));
-      //Scheduler.getInstance().add(new Teleop(this, tankDrive, driverJoystick, operatorJoystick));
+    if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_LEFT_BUMPER)) {
+        pcm.setLowGear(false);
+        pcm.setHighGear(true);
     }
 
-    if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_B)) {
-      Scheduler.getInstance().add(new DriveVoltageTime(tankDrive, -1));
+    if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_RIGHT_BUMPER)) {
+      pcm.setLowGear(true);
+      pcm.setHighGear(false);
     }
 
-    if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_X)) {
-      Scheduler.getInstance().add(new DriveVoltageTime(tankDrive, 1));
-    }
-    
-    if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_Y)) {
-      Scheduler.getInstance().add(new DriveGyroOneSide(tankDrive, 20, "left"));
-      //Scheduler.getInstance().add(new DriveGyroOneSide(tankDrive, 20, "left"));
-    }
-    if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_TWO_WINDOWS)) {
-      Scheduler.getInstance().add(new DriveGyroOneSide(tankDrive, -20, "right"));
-    }
-
-    // if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_THREE_LINES)) {
-    //   Gyro.reset();
-    // }
-
-
-    // if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_LEFT_BUMPER)) {
-    //     pcm.setLowGear(false);
-    //     pcm.setHighGear(true);
-    // }
-
-    // if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_RIGHT_BUMPER)) {
-    //   pcm.setLowGear(true);
-    //   pcm.setHighGear(false);
-    // }
-
-    // tankDrive.setPercentage(driverJoystick.getRawAxis(Constants.XBOX_AXIS_LEFT_Y), driverJoystick.getRawAxis(Constants.XBOX_AXIS_RIGHT_Y));
-
-    Scheduler.getInstance().run();
-    
-    //System.out.println("Gyro angle: " + Gyro.angle());
-    SmartDashboard.putString("DB/String 0", String.valueOf(Gyro.angle()));
-    //System.out.println("avg difference: " + Gyro.avg());
     //Drivetrain
     if (Math.abs(driverJoystick.getRawAxis(Constants.XBOX_AXIS_LEFT_Y)) > 0.1) {
       talonFR.set(ControlMode.PercentOutput, -driverJoystick.getRawAxis(Constants.XBOX_AXIS_LEFT_Y));
@@ -219,8 +185,6 @@ public class Robot extends TimedRobot {
     talonBL.follow(talonFL);
     talonBR.follow(talonFR);
 
-    //tankDrive.setPercentage(driverJoystick.getRawAxis(Constants.XBOX_AXIS_LEFT_Y),driverJoystick.getRawAxis(Constants.XBOX_AXIS_RIGHT_Y));
-
     if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_LEFT_BUMPER)){
       pcm.setLowGear(false);
       pcm.setHighGear(true);
@@ -229,31 +193,6 @@ public class Robot extends TimedRobot {
       pcm.setLowGear(true);
     }
 
-    // //Manipulator - XBOX
-    // if (operatorJoystick.getRawAxis(Constants.XBOX_AXIS_LEFT_TRIGGER) > 0.1) {
-    //   manipulator.pushBox(operatorJoystick.getRawAxis(Constants.XBOX_AXIS_LEFT_TRIGGER));
-    // } else if (operatorJoystick.getRawAxis(Constants.XBOX_AXIS_RIGHT_TRIGGER) > 0.1) {
-    //   manipulator.pushBox(-operatorJoystick.getRawAxis(Constants.XBOX_AXIS_RIGHT_TRIGGER));
-    // } else {
-    //   manipulator.stop();
-    // }
-
-    // if (operatorJoystick.getRawButton(Constants.XBOX_BUTTON_LEFT_BUMPER)) {
-    //   manipulator.openManipulator();
-    // }
-    // if (operatorJoystick.getRawButton(Constants.XBOX_BUTTON_RIGHT_BUMPER)) {
-    //   manipulator.closeManipulator();
-    // }
-
-
-    // if (operatorJoystick.getRawButton(Constants.XBOX_BUTTON_A)) {
-    //   presetPosition = 0;
-    // } else if (operatorJoystick.getRawButton(Constants.XBOX_BUTTON_B)) {
-    //   presetPosition = -850;
-    // } else if (operatorJoystick.getRawButton(Constants.XBOX_BUTTON_Y)) {
-    //   presetPosition = -1500;
-    // }
-
     //Manipulator - LOGITECH
     if (operatorJoystick.getRawButton(Constants.LOGITECH_LEFT_TRIGGER)) {
       manipulator.pushBox(0.5);
@@ -261,7 +200,7 @@ public class Robot extends TimedRobot {
       manipulator.pushBox(-0.5);
     } else if (Math.abs(operatorJoystick.getRawAxis(3)) > 0.1) {
          manipulator.pushBox(operatorJoystick.getRawAxis(3));
-    }else {
+    } else {
       manipulator.pushBox(-0.1);
     }
 
@@ -287,31 +226,7 @@ public class Robot extends TimedRobot {
     } else if (operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_Y)) {
       presetPosition = 0;
     }
-    System.out.println("presetPosition: " + presetPosition);
-    if (presetPosition == 2100 && manipulator.getPosition() > 1900) {
-      manipulator.goPercentOutput(0);
-    } else if (presetPosition == 0 && manipulator.getPosition() < 100) {
-      manipulator.goPercentOutput(0);
-    } else {
-      manipulator.goToPosition(presetPosition);
-    }
-    if (Math.abs(operatorJoystick.getRawAxis(1)) > 0.05) {
-      //manipulator.goPercentOutput(operatorJoystick.getRawAxis(1) * 0.8);
-    } 
-    // if (!start) {
-    //   manipulator.goPercentOutput(0.5);
-    //   start = true;
-    // } else {
-    //   manipulator.goPercentOutput(0);
-    // }
 
-    
-
-
-    
-  
-
-    
 
   }
 
