@@ -2,6 +2,8 @@ package frc.robot;
 
 import frc.util.Constants;
 
+
+
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -15,6 +17,8 @@ public class PCMHandler {
 
 	Solenoid clawSolRight2;
 	Solenoid clawSolLeft2;
+	
+	Solenoid hatchManip;
 	
     
 	public PCMHandler(int port) {
@@ -30,6 +34,8 @@ public class PCMHandler {
 		clawSolRight2 = new Solenoid(Constants.PCM_CAN_ID,Constants.PCM_BOX_MANIPULATOR_RIGHT2);
 		clawSolLeft2 = new Solenoid(Constants.PCM_CAN_ID,Constants.PCM_BOX_MANIPULATOR_LEFT2);
 
+		hatchManip = new Solenoid(Constants.PCM_CAN_ID,Constants.PCM_HATCH_MANIP);
+		
 	}
 	
 	public void turnOn(){
@@ -65,6 +71,14 @@ public class PCMHandler {
 		clawSolRight.set(true);
 		clawSolLeft2.set(false);
 		clawSolRight2.set(false);
+	}
+
+	public void openHatchManip() {
+		hatchManip.set(true);
+	}
+
+	public void closeHatchManip() {
+		hatchManip.set(false);
 	}
 
 

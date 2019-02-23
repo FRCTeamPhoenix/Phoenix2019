@@ -123,6 +123,7 @@ public class BoxManipulator extends Subsystem {
 
 	protected void initDefaultCommand() {
 		// TODO Auto-generated method stub
+		
 	}
 	
 }

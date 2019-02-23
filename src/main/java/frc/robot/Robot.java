@@ -265,6 +265,12 @@ public class Robot extends TimedRobot {
       manipulator.pushBox(-0.1);
     }
 
+    if (operatorJoystick.getRawButton(9)) {
+      pcm.openHatchManip();
+    } else {
+      pcm.closeHatchManip();
+    }
+
 
     if (operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_LEFT_BUMPER)) {
       manipulator.openManipulator();
@@ -272,6 +278,7 @@ public class Robot extends TimedRobot {
     if (operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_RIGHT_BUMPER)) {
       manipulator.closeManipulator();
     }
+
 
     if (operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_A)) {
       presetPosition = 2100;
