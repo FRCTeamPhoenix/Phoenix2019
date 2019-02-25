@@ -21,6 +21,8 @@ import frc.robot.subsystems.BoxManipulator;
 import frc.robot.subsystems.TankDrive;
 import frc.util.CameraControl;
 import frc.util.Constants;
+import frc.util.PixyDriver;
+import io.github.pseudoresonance.pixy2api.Pixy2;
 /**
  * The VM is configured to automatically run this class, and to call the
  * functions corresponding to each mode, as described in the IterativeRobot
@@ -60,6 +62,8 @@ public class Robot extends TimedRobot {
   int presetPosition;
 
   boolean start = false;
+
+  Pixy2 pixy;
   /**
    * This function is run when the robot is first started up and should be
    * used for any initialization code.
@@ -88,6 +92,8 @@ public class Robot extends TimedRobot {
 
     Gyro.init();
     cameras = new CameraControl(320, 240, 15);
+
+    PixyDriver.init();
   }
 
   /**
@@ -123,6 +129,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
+    PixyDriver.get();
     teleopPeriodic();
   }
 
