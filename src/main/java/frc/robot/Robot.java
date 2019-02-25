@@ -22,6 +22,7 @@ import frc.robot.subsystems.TankDrive;
 import frc.util.CameraControl;
 import frc.util.Constants;
 import frc.util.PixyDriver;
+import frc.robot.Gyro;
 import io.github.pseudoresonance.pixy2api.Pixy2;
 /**
  * The VM is configured to automatically run this class, and to call the
