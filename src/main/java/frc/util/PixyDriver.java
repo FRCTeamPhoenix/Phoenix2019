@@ -36,6 +36,10 @@ public class PixyDriver {
         
         xCoord = ball.getX() + ball.getWidth() / 2;
         distance = ball.getWidth();
+
+        if(ball.getX() <= 0) {
+            
+        }
         System.out.println(xCoord);
     }
 }
