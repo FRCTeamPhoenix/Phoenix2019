@@ -9,7 +9,9 @@ package frc.command;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
+import frc.util.Constants;
 import frc.util.Vision;
+
 
 public class GetVisionData extends Command {
 
@@ -23,7 +25,10 @@ public class GetVisionData extends Command {
   @Override
   protected void initialize() {
     m_robot.targetCenterX = 11;//Vision.getHorizontalDistance();//Vision.getHorizontalDistance(); //obviously not actually 94 lol
+    m_robot.leftSide = m_robot.targetCenterX < -Constants.NEAR_TARGET;
+    m_robot.rightSide = m_robot.targetCenterX > Constants.NEAR_TARGET;
     m_robot.targetDistance = 0;//Vision.getVerticalDistance();//Vision.getVerticalDistance(); //obviously not actually 1248 lol
+
   }
 
   // Called repeatedly when this Command is scheduled to run
@@ -49,3 +54,4 @@ public class GetVisionData extends Command {
   protected void interrupted() {
   }
 }
+

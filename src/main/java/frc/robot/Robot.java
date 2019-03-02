@@ -8,6 +8,7 @@
 package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
@@ -64,7 +65,13 @@ public class Robot extends TimedRobot {
 
   boolean start = false;
 
+
+  public double targetCenterX = 999;
+  public boolean leftSide = true;
+  public boolean rightSide = false;
+
   Pixy2 pixy;
+
   /**
    * This function is run when the robot is first started up and should be
    * used for any initialization code.
@@ -75,14 +82,15 @@ public class Robot extends TimedRobot {
     driverJoystick = new Joystick(0);
     operatorJoystick = new Joystick(1);
     pcm = new PCMHandler(11);
-    talonFR = new WPI_TalonSRX(Constants.RIGHT_MASTER_TALON_ID);
-    talonFL = new WPI_TalonSRX(Constants.LEFT_MASTER_TALON_ID);
-		talonBR = new WPI_TalonSRX(Constants.RIGHT_SLAVE_TALON_ID);
-    talonBL = new WPI_TalonSRX(Constants.LEFT_SLAVE_TALON_ID);
+
+    talonFR = new WPI_TalonSRX(Constants.LEFT_MASTER_TALON_ID);
+    talonBR = new WPI_TalonSRX(Constants.LEFT_SLAVE_TALON_ID);
     
-    talonIntakeLeft = new WPI_VictorSPX(Constants.VICTOR_INTAKE_LEFT);
-    talonIntakeRight = new WPI_VictorSPX(Constants.VICTOR_INTAKE_RIGHT);
+    talonFL = new WPI_TalonSRX(Constants.RIGHT_MASTER_TALON_ID);
+    talonBL = new WPI_TalonSRX(Constants.RIGHT_SLAVE_TALON_ID);
+    
     talonTip = new WPI_TalonSRX(Constants.TALON_TIP);
+
 
     tankDrive = new TankDrive(talonFL, talonFR, talonBL, talonBR);
     manipulator = new BoxManipulator(talonIntakeRight, talonIntakeLeft, talonTip, pcm);
@@ -95,6 +103,7 @@ public class Robot extends TimedRobot {
     cameras = new CameraControl(320, 240, 15);
 
     PixyDriver.init();
+
   }
 
   /**
@@ -137,24 +146,27 @@ public class Robot extends TimedRobot {
 
   public void teleopInit() {
     //pcm.turnOn();
-    tankDrive.teleopConfig();
-    //Gyro.calibrate();
-    Command teleop = new Teleop(this, tankDrive, manipulator, driverJoystick, operatorJoystick);
-		//Scheduler.getInstance().add(teleop);
-    Gyro.reset();
+
+    //tankDrive.teleopConfig();
 
     presetPosition = 0;
+    talonBR.follow(talonFR);
+    talonBL.follow(talonFL);
+
+    talonFL.setSelectedSensorPosition(0);
+    talonFR.setSelectedSensorPosition(0);
+
+    tankDrive.teleopConfig();
+    //Gyro.calibrate();
+    Gyro.reset();
     
-    talonTip.config_kF(0, SmartDashboard.getNumber("DB/Slider 0",0), 10);
-		talonTip.config_kP(0, SmartDashboard.getNumber("DB/Slider 1",0), 10);
-		talonTip.config_kI(0, SmartDashboard.getNumber("DB/Slider 2",0), 10);
-		talonTip.config_kD(0, SmartDashboard.getNumber("DB/Slider 3",0), 10);
+    talonFL.setInverted(InvertType.None);
+    talonBL.setInverted(InvertType.FollowMaster);
 
-		talonTip.config_kF(1, SmartDashboard.getNumber("DB/Slider 0",0), 10);
-		talonTip.config_kP(1, SmartDashboard.getNumber("DB/Slider 1",0), 10);
-		talonTip.config_kI(1, SmartDashboard.getNumber("DB/Slider 2",0), 10);
-		talonTip.config_kD(1, SmartDashboard.getNumber("DB/Slider 3",0), 10);
+    talonFR.setInverted(InvertType.InvertMotorOutput);
+    talonBR.setInverted(InvertType.FollowMaster);
 
+    talonTip.setInverted(InvertType.None);
   } 
   /**
    * This function is called periodically during operator control.
@@ -162,76 +174,18 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
 
-    if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_LEFT_BUMPER)) {
-        pcm.setLowGear(false);
-        pcm.setHighGear(true);
-    }
-
-    if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_RIGHT_BUMPER)) {
-      pcm.setLowGear(true);
-      pcm.setHighGear(false);
-    }
-
-    //Drivetrain
-    if (Math.abs(driverJoystick.getRawAxis(Constants.XBOX_AXIS_LEFT_Y)) > 0.1) {
-      talonFR.set(ControlMode.PercentOutput, -driverJoystick.getRawAxis(Constants.XBOX_AXIS_LEFT_Y));
-      
-    }else{
-      talonFR.set(ControlMode.PercentOutput, 0);
-    }
-    if (Math.abs(driverJoystick.getRawAxis(Constants.XBOX_AXIS_RIGHT_Y)) > 0.1) {
-      talonFL.set(ControlMode.PercentOutput, -driverJoystick.getRawAxis(Constants.XBOX_AXIS_RIGHT_Y));
-      
-    }else{
-      talonFL.set(ControlMode.PercentOutput, 0);
-    }
-
-    talonBL.follow(talonFL);
-    talonBR.follow(talonFR);
-
-    if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_LEFT_BUMPER)){
-      pcm.setLowGear(false);
-      pcm.setHighGear(true);
-    }else if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_RIGHT_BUMPER)){
-      pcm.setHighGear(false);
-      pcm.setLowGear(true);
-    }
-
-    //Manipulator - LOGITECH
-    if (operatorJoystick.getRawButton(Constants.LOGITECH_LEFT_TRIGGER)) {
-      manipulator.pushBox(0.5);
-    } else if (operatorJoystick.getRawButton(Constants.LOGITECH_RIGHT_TRIGGER)) {
-      manipulator.pushBox(-0.5);
-    } else if (Math.abs(operatorJoystick.getRawAxis(3)) > 0.1) {
-         manipulator.pushBox(operatorJoystick.getRawAxis(3));
-    } else {
-      manipulator.pushBox(-0.1);
-    }
-
-    if (operatorJoystick.getRawButton(9)) {
-      pcm.openHatchManip();
-    } else {
-      pcm.closeHatchManip();
+    //talonFR.set(ControlMode.MotionMagic, 5);
+    //talonFR.set(ControlMode.PercentOutput, driverJoystick.getRawAxis(Constants.XBOX_AXIS_RIGHT_Y));
+    //talonFL.set(ControlMode.PercentOutput, driverJoystick.getRawAxis(Constants.XBOX_AXIS_LEFT_Y));
+    if(operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_X)) {
+      talonFR.setSelectedSensorPosition(0, 0, 10);
+      talonFL.setSelectedSensorPosition(0, 0, 10);
+      talonTip.setSelectedSensorPosition(0, 0, 10);
     }
 
 
-    if (operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_LEFT_BUMPER)) {
-      manipulator.openManipulator();
-    }
-    if (operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_RIGHT_BUMPER)) {
-      manipulator.closeManipulator();
-    }
-
-
-    if (operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_A)) {
-      presetPosition = 2100;
-    } else if (operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_B)) {
-      presetPosition = 1000;
-    } else if (operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_Y)) {
-      presetPosition = 0;
-    }
-
-
+    talonTip.set(ControlMode.PercentOutput, -operatorJoystick.getRawAxis(5));
+    talonFR.set(ControlMode.PercentOutput, -operatorJoystick.getRawAxis(1));
   }
 
   /**

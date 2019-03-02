@@ -36,6 +36,7 @@ public class Constants {
     public static final int XBOX_BUTTON_LEFT_BUMPER = 5;
     public static final int XBOX_BUTTON_RIGHT_BUMPER = 6;
     
+    public static final int NEAR_TARGET = 1;
 
     public static final int XBOX_BUTTON_TWO_WINDOWS = 7;
     public static final int XBOX_BUTTON_THREE_LINES = 8;

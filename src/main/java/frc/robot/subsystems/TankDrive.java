@@ -84,7 +84,17 @@ public class TankDrive extends Subsystem {
 
     public void setPercentage(double left,double right) {
 
-		talonFL.set(ControlMode.PercentOutput, Math.abs(left) >= Constants.JOYSTICK_DEADZONE ? left : 0);
+        
+		talonFL.set(ControlMode.PercentOutput, left);
+        talonFR.set(ControlMode.PercentOutput, right);
+
+    }
+
+    public void setMotionMagic(double left, double right) {
+
+
+
+		    talonFL.set(ControlMode.PercentOutput, Math.abs(left) >= Constants.JOYSTICK_DEADZONE ? left : 0);
         talonFR.set(ControlMode.PercentOutput, Math.abs(right) >= Constants.JOYSTICK_DEADZONE ? right : 0);
         talonBL.follow(talonFL);
         talonBR.follow(talonFR);

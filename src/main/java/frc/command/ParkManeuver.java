@@ -15,23 +15,24 @@ import frc.robot.subsystems.TankDrive;
 import frc.util.Constants;
 
 public class ParkManeuver extends CommandGroup {
+
   public ParkManeuver(Robot robot, Joystick stick, TankDrive tankDrive) {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
-    addSequential(new DriveStraight(tankDrive, -8000));
-    addSequential(new GetVisionData(robot));
+    addSequential(new MoveMotionMagic(tankDrive, -8000, -8000));
     double multiplier = SmartDashboard.getNumber("DB/Slider 0", 0);
     System.out.println(multiplier * robot.targetCenterX);
-    if(robot.targetCenterX < Constants.NEAR_TARGET) {
-      addSequential(new DriveGyroOneSide(tankDrive, multiplier * robot.targetCenterX, "left"));
-      addSequential(new DriveGyroOneSide(tankDrive, multiplier * robot.targetCenterX, "right"));
+    if(robot.leftSide) {
+      addSequential(new MoveMotionMagic(tankDrive, multiplier * robot.targetCenterX, 0));
+      addSequential(new MoveMotionMagic(tankDrive, 0, multiplier * robot.targetCenterX));
       //addSequential(new DriveVoltageTime(tankDrive, robot.targetDistance));
-    } else if(robot.targetCenterX > Constants.NEAR_TARGET) {
-      addSequential(new DriveGyroOneSide(tankDrive, multiplier * robot.targetCenterX, "right"));
-      addSequential(new DriveGyroOneSide(tankDrive, multiplier * robot.targetCenterX, "left"));
-      //addSequential(new DriveVoltageTime(tankDrive, Constants.TARGET_DISTANCE_MUL * robot.targetDistance));
+    } else if(robot.rightSide) {
+      addSequential(new MoveMotionMagic(tankDrive, 0, multiplier * robot.targetCenterX));
+      addSequential(new MoveMotionMagic(tankDrive, multiplier * robot.targetCenterX, 0));
     } else {
-      addSequential(new DriveStraight(tankDrive, 8000));
+
     }
   }
 }
+
+
