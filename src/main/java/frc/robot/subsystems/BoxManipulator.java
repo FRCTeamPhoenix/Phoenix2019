@@ -41,15 +41,15 @@ public class BoxManipulator extends Subsystem {
 		talonTip.configPeakOutputReverse(-1, PidTimeOutMs);
 		talonTip.configAllowableClosedloopError(0, PidLoopIndex, PidTimeOutMs);
 		
-		talonTip.config_kF(PidLoopIndex, SmartDashboard.getNumber("DB/slider 0",0), PidTimeOutMs);
-		talonTip.config_kP(PidLoopIndex, SmartDashboard.getNumber("DB/slider 1",0), PidTimeOutMs);
-		talonTip.config_kI(PidLoopIndex, SmartDashboard.getNumber("DB/slider 2",0), PidTimeOutMs);
-		talonTip.config_kD(PidLoopIndex, SmartDashboard.getNumber("DB/slider 3",0), PidTimeOutMs);
+		talonTip.config_kF(PidLoopIndex, SmartDashboard.getNumber("DB/Slider 0",0), PidTimeOutMs);
+		talonTip.config_kP(PidLoopIndex, SmartDashboard.getNumber("DB/Slider 1",0), PidTimeOutMs);
+		talonTip.config_kI(PidLoopIndex, SmartDashboard.getNumber("DB/Slider 2",0), PidTimeOutMs);
+		talonTip.config_kD(PidLoopIndex, SmartDashboard.getNumber("DB/Slider 3",0), PidTimeOutMs);
 
-		talonTip.config_kF(1, SmartDashboard.getNumber("DB/slider 0",0), PidTimeOutMs);
-		talonTip.config_kP(1, SmartDashboard.getNumber("DB/slider 1",0), PidTimeOutMs);
-		talonTip.config_kI(1, SmartDashboard.getNumber("DB/slider 2",0), PidTimeOutMs);
-		talonTip.config_kD(1, SmartDashboard.getNumber("DB/slider 3",0), PidTimeOutMs);
+		talonTip.config_kF(1, SmartDashboard.getNumber("DB/Slider 0",0), PidTimeOutMs);
+		talonTip.config_kP(1, SmartDashboard.getNumber("DB/Slider 1",0), PidTimeOutMs);
+		talonTip.config_kI(1, SmartDashboard.getNumber("DB/Slider 2",0), PidTimeOutMs);
+		talonTip.config_kD(1, SmartDashboard.getNumber("DB/Slider 3",0), PidTimeOutMs);
 		
 		this.talonIntakeLeft.follow(this.talonIntakeRight);
 
@@ -123,6 +123,7 @@ public class BoxManipulator extends Subsystem {
 
 	protected void initDefaultCommand() {
 		// TODO Auto-generated method stub
+		
 	}
 	
 }

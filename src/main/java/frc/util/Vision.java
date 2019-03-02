@@ -8,7 +8,7 @@ public class Vision {
 
     public static double getVerticalDistance() {
         NetworkTable nt = NetworkTableInstance.getDefault().getTable("Vision");
-        return nt.getEntry("VerticalDistance").getDouble(999);
+        return nt.getEntry("Distance").getDouble(999);
     }
 
     public static double getHorizontalDistance() {

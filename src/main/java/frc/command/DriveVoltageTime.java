@@ -8,44 +8,51 @@
 package frc.command;
 
 import edu.wpi.first.wpilibj.command.Command;
-import frc.robot.Robot;
-import frc.util.Constants;
-import frc.util.Vision;
+import frc.robot.subsystems.TankDrive;
 
+public class DriveVoltageTime extends Command {
 
-public class GetVisionData extends Command {
+  private double driveTime;
+  private double startTime;
+  private boolean backward;
+  
+  private TankDrive m_tankDrive;
 
-  private Robot m_robot;
-
-  public GetVisionData(Robot robot) {
-    m_robot = robot;
+  public DriveVoltageTime(TankDrive tankDrive, double driveTime) {
+    m_tankDrive = tankDrive;
+    this.driveTime = 1000 * Math.abs(driveTime);
+    this.backward = (driveTime < 0);
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    m_robot.targetCenterX = 11;//Vision.getHorizontalDistance();//Vision.getHorizontalDistance(); //obviously not actually 94 lol
-    m_robot.leftSide = m_robot.targetCenterX < -Constants.NEAR_TARGET;
-    m_robot.rightSide = m_robot.targetCenterX > Constants.NEAR_TARGET;
-    m_robot.targetDistance = 0;//Vision.getVerticalDistance();//Vision.getVerticalDistance(); //obviously not actually 1248 lol
-
+    this.startTime = System.currentTimeMillis();
+    m_tankDrive.autonomousConfig();
+    if(this.backward)
+      m_tankDrive.setPercentage(0.5, 0.5);
+    else
+      m_tankDrive.setPercentage(-0.5, -0.5);
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    
+
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return true;
+    //System.out.println(System.currentTimeMillis() - startTime);
+    return System.currentTimeMillis() - startTime >= driveTime;
   }
 
   // Called once after isFinished returns true
   @Override
   protected void end() {
+    //System.out.println("ending");
+    m_tankDrive.setPercentage(0, 0);
   }
 
   // Called when another command which requires one or more of the same
@@ -54,4 +61,3 @@ public class GetVisionData extends Command {
   protected void interrupted() {
   }
 }
-

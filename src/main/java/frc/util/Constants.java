@@ -44,6 +44,12 @@ public class Constants {
     public static final int XBOX_BUTTON_LEFT_JOYSTICK_PRESSED = 9;
     public static final int XBOX_BUTTON_RIGHT_JOYSTICK_PRESSED = 10;
 
+    public static final double JOYSTICK_DEADZONE = 0.1;
+    public static final int NEAR_TARGET = 12;
+
+    public static final double TARGET_CENTERX_MUL = 1;
+    public static final double TARGET_DISTANCE_MUL = 1;
+    
     public static final int LOGITECH_RIGHT_TRIGGER = 8;
     public static final int LOGITECH_LEFT_TRIGGER = 7;
 
@@ -59,7 +65,13 @@ public class Constants {
     public static final int PCM_CAN_ID = 11;
 	public static final int PCM_SLOT_HIGHGEAR = 4;
     public static final int PCM_SLOT_LOWGEAR = 5;
-    public static final int PCM_BOX_MANIPULATOR_LEFT = 6;
-    public static final int PCM_BOX_MANIPULATOR_RIGHT = 7;
+
+    public static final int PCM_BOX_MANIPULATOR_LEFT = 0;
+    public static final int PCM_BOX_MANIPULATOR_LEFT2 = 1;
+
+    public static final int PCM_BOX_MANIPULATOR_RIGHT = 2;
+    public static final int PCM_BOX_MANIPULATOR_RIGHT2 = 6;
+
+    public static final int PCM_HATCH_MANIP = 7;
     
 }

@@ -2,6 +2,7 @@ package frc.command;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.command.Command;
+import frc.robot.Robot;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.BoxManipulator;
@@ -9,10 +10,12 @@ import frc.util.Constants;
 
 public class Operator extends Command {
 
+    private Robot m_robot;
     private Joystick m_operatorJoystick;
     private BoxManipulator m_manipulator;
 
-    public Operator(Joystick OperatorJoystick, BoxManipulator manipulator) {
+    public Operator(Robot robot, Joystick OperatorJoystick, BoxManipulator manipulator) {
+        m_robot = robot;
         m_manipulator = manipulator;
         m_operatorJoystick = OperatorJoystick;
     }

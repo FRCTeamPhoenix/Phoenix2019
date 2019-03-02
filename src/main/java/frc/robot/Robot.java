@@ -14,15 +14,17 @@ import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.Scheduler;
+import frc.command.Teleop;
 import frc.robot.subsystems.BoxManipulator;
 import frc.robot.subsystems.TankDrive;
-import frc.util.Constants;
-import frc.command.Teleop;
 import frc.util.CameraControl;
+import frc.util.Constants;
+import frc.util.PixyDriver;
+import frc.robot.Gyro;
+import io.github.pseudoresonance.pixy2api.Pixy2;
 /**
  * The VM is configured to automatically run this class, and to call the
  * functions corresponding to each mode, as described in the IterativeRobot
@@ -49,6 +51,11 @@ public class Robot extends TimedRobot {
   WPI_TalonSRX talonTip;
 
   TankDrive tankDrive;
+
+  public double targetCenterX = 11;
+  public double targetDistance = 0;
+  public boolean targetFound = true;
+
   BoxManipulator manipulator;
   PCMHandler pcm;
 
@@ -58,9 +65,12 @@ public class Robot extends TimedRobot {
 
   boolean start = false;
 
+
   public double targetCenterX = 999;
   public boolean leftSide = true;
   public boolean rightSide = false;
+
+  Pixy2 pixy;
 
   /**
    * This function is run when the robot is first started up and should be
@@ -80,6 +90,20 @@ public class Robot extends TimedRobot {
     talonBL = new WPI_TalonSRX(Constants.RIGHT_SLAVE_TALON_ID);
     
     talonTip = new WPI_TalonSRX(Constants.TALON_TIP);
+
+
+    tankDrive = new TankDrive(talonFL, talonFR, talonBL, talonBR);
+    manipulator = new BoxManipulator(talonIntakeRight, talonIntakeLeft, talonTip, pcm);
+
+    m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
+    m_chooser.addOption("My Auto", kCustomAuto);
+    SmartDashboard.putData("Auto choices", m_chooser);
+
+    Gyro.init();
+    cameras = new CameraControl(320, 240, 15);
+
+    PixyDriver.init();
+
   }
 
   /**
@@ -115,12 +139,14 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
+    PixyDriver.get();
     teleopPeriodic();
   }
 
 
   public void teleopInit() {
     //pcm.turnOn();
+
     //tankDrive.teleopConfig();
 
     presetPosition = 0;
@@ -130,6 +156,10 @@ public class Robot extends TimedRobot {
     talonFL.setSelectedSensorPosition(0);
     talonFR.setSelectedSensorPosition(0);
 
+    tankDrive.teleopConfig();
+    //Gyro.calibrate();
+    Gyro.reset();
+    
     talonFL.setInverted(InvertType.None);
     talonBL.setInverted(InvertType.FollowMaster);
 
@@ -143,6 +173,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
+
     //talonFR.set(ControlMode.MotionMagic, 5);
     //talonFR.set(ControlMode.PercentOutput, driverJoystick.getRawAxis(Constants.XBOX_AXIS_RIGHT_Y));
     //talonFL.set(ControlMode.PercentOutput, driverJoystick.getRawAxis(Constants.XBOX_AXIS_LEFT_Y));
@@ -151,6 +182,7 @@ public class Robot extends TimedRobot {
       talonFL.setSelectedSensorPosition(0, 0, 10);
       talonTip.setSelectedSensorPosition(0, 0, 10);
     }
+
 
     talonTip.set(ControlMode.PercentOutput, -operatorJoystick.getRawAxis(5));
     talonFR.set(ControlMode.PercentOutput, -operatorJoystick.getRawAxis(1));

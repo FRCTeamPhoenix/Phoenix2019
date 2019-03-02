@@ -9,38 +9,27 @@ package frc.command;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
-import frc.util.Constants;
-import frc.util.Vision;
 
-
-public class GetVisionData extends Command {
-
-  private Robot m_robot;
-
-  public GetVisionData(Robot robot) {
-    m_robot = robot;
+public class TurnToBallPixy extends Command {
+  public TurnToBallPixy(Robot robot) {
+    // Use requires() here to declare subsystem dependencies
+    // eg. requires(chassis);
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    m_robot.targetCenterX = 11;//Vision.getHorizontalDistance();//Vision.getHorizontalDistance(); //obviously not actually 94 lol
-    m_robot.leftSide = m_robot.targetCenterX < -Constants.NEAR_TARGET;
-    m_robot.rightSide = m_robot.targetCenterX > Constants.NEAR_TARGET;
-    m_robot.targetDistance = 0;//Vision.getVerticalDistance();//Vision.getVerticalDistance(); //obviously not actually 1248 lol
-
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return true;
+    return false;
   }
 
   // Called once after isFinished returns true
@@ -54,4 +43,3 @@ public class GetVisionData extends Command {
   protected void interrupted() {
   }
 }
-

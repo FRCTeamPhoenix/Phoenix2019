@@ -8,44 +8,48 @@
 package frc.command;
 
 import edu.wpi.first.wpilibj.command.Command;
-import frc.robot.Robot;
-import frc.util.Constants;
-import frc.util.Vision;
+import frc.robot.subsystems.TankDrive;
 
+public class DriveStraight extends Command {
 
-public class GetVisionData extends Command {
+  private TankDrive m_tankDrive;
+  private double amount;
+  
+  private boolean reached;
+  private long reachedTime;
 
-  private Robot m_robot;
-
-  public GetVisionData(Robot robot) {
-    m_robot = robot;
+  public DriveStraight(TankDrive tankDrive, double amount) {
+    m_tankDrive = tankDrive;
+    this.amount = amount;
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    m_robot.targetCenterX = 11;//Vision.getHorizontalDistance();//Vision.getHorizontalDistance(); //obviously not actually 94 lol
-    m_robot.leftSide = m_robot.targetCenterX < -Constants.NEAR_TARGET;
-    m_robot.rightSide = m_robot.targetCenterX > Constants.NEAR_TARGET;
-    m_robot.targetDistance = 0;//Vision.getVerticalDistance();//Vision.getVerticalDistance(); //obviously not actually 1248 lol
-
+    m_tankDrive.zeroEncoders();
+    m_tankDrive.setMotionMagic(amount / 4096, amount / 4096);
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    
+    boolean startFinishing = Math.abs(m_tankDrive.talonFL.getSelectedSensorPosition() - amount) < 20;
+    if(startFinishing && !reached) {
+      reached = true;
+      reachedTime = System.currentTimeMillis();
+    }
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return true;
+    return reached && System.currentTimeMillis() - reachedTime > 300;
   }
 
   // Called once after isFinished returns true
   @Override
   protected void end() {
+    m_tankDrive.setPercentage(0, 0);
   }
 
   // Called when another command which requires one or more of the same
@@ -54,4 +58,3 @@ public class GetVisionData extends Command {
   protected void interrupted() {
   }
 }
-
