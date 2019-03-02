@@ -57,6 +57,11 @@ public class Robot extends TimedRobot {
   int presetPosition;
 
   boolean start = false;
+
+  public double targetCenterX = 999;
+  public boolean leftSide = true;
+  public boolean rightSide = false;
+
   /**
    * This function is run when the robot is first started up and should be
    * used for any initialization code.
@@ -72,7 +77,9 @@ public class Robot extends TimedRobot {
     talonBR = new WPI_TalonSRX(Constants.LEFT_SLAVE_TALON_ID);
     
     talonFL = new WPI_TalonSRX(Constants.RIGHT_MASTER_TALON_ID);
-		talonBL = new WPI_TalonSRX(Constants.RIGHT_SLAVE_TALON_ID);
+    talonBL = new WPI_TalonSRX(Constants.RIGHT_SLAVE_TALON_ID);
+    
+    talonTip = new WPI_TalonSRX(Constants.TALON_TIP);
   }
 
   /**
@@ -113,7 +120,7 @@ public class Robot extends TimedRobot {
 
 
   public void teleopInit() {
-    pcm.turnOn();
+    //pcm.turnOn();
     //tankDrive.teleopConfig();
 
     presetPosition = 0;
@@ -128,6 +135,8 @@ public class Robot extends TimedRobot {
 
     talonFR.setInverted(InvertType.InvertMotorOutput);
     talonBR.setInverted(InvertType.FollowMaster);
+
+    talonTip.setInverted(InvertType.None);
   } 
   /**
    * This function is called periodically during operator control.
@@ -140,7 +149,11 @@ public class Robot extends TimedRobot {
     if(operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_X)) {
       talonFR.setSelectedSensorPosition(0, 0, 10);
       talonFL.setSelectedSensorPosition(0, 0, 10);
+      talonTip.setSelectedSensorPosition(0, 0, 10);
     }
+
+    talonTip.set(ControlMode.PercentOutput, -operatorJoystick.getRawAxis(5));
+    talonFR.set(ControlMode.PercentOutput, -operatorJoystick.getRawAxis(1));
   }
 
   /**

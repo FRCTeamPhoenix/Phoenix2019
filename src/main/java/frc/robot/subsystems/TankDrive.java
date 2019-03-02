@@ -81,8 +81,11 @@ public class TankDrive extends Subsystem {
         
 		talonFL.set(ControlMode.PercentOutput, left);
         talonFR.set(ControlMode.PercentOutput, right);
-        talonBL.follow(talonFL);
-        talonBR.follow(talonFR);
+
+    }
+
+    public void setMotionMagic(double left, double right) {
+
 
     }
     
