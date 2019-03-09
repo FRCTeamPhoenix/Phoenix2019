@@ -90,6 +90,8 @@ public class Robot extends TimedRobot {
 
     Gyro.init();
     cameras = new CameraControl(320, 240, 15);
+    talonTip.setSensorPhase(true);
+    talonTip.setInverted(true);
   }
 
   /**
@@ -130,6 +132,8 @@ public class Robot extends TimedRobot {
 
 
   public void teleopInit() {
+    talonBL.follow(talonFL);
+    talonBR.follow(talonFR);
     //pcm.turnOn();
     tankDrive.teleopConfig();
     //Gyro.calibrate();
@@ -139,16 +143,11 @@ public class Robot extends TimedRobot {
 
     presetPosition = 0;
     
-    talonTip.config_kF(0, SmartDashboard.getNumber("DB/Slider 0",0), 10);
-		talonTip.config_kP(0, SmartDashboard.getNumber("DB/Slider 1",0), 10);
-		talonTip.config_kI(0, SmartDashboard.getNumber("DB/Slider 2",0), 10);
-		talonTip.config_kD(0, SmartDashboard.getNumber("DB/Slider 3",0), 10);
 
-		talonTip.config_kF(1, SmartDashboard.getNumber("DB/Slider 0",0), 10);
-		talonTip.config_kP(1, SmartDashboard.getNumber("DB/Slider 1",0), 10);
-		talonTip.config_kI(1, SmartDashboard.getNumber("DB/Slider 2",0), 10);
-		talonTip.config_kD(1, SmartDashboard.getNumber("DB/Slider 3",0), 10);
-
+    talonTip.set(ControlMode.PercentOutput,0);
+    tankDrive.setPercentage(0, 0);
+    talonTip.setSelectedSensorPosition(2100);
+    
   } 
   /**
    * This function is called periodically during operator control.
@@ -180,8 +179,7 @@ public class Robot extends TimedRobot {
       talonFL.set(ControlMode.PercentOutput, 0);
     }
 
-    talonBL.follow(talonFL);
-    talonBR.follow(talonFR);
+    
 
     if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_LEFT_BUMPER)){
       pcm.setLowGear(false);
@@ -199,14 +197,32 @@ public class Robot extends TimedRobot {
     } else if (Math.abs(operatorJoystick.getRawAxis(3)) > 0.1) {
          manipulator.pushBox(operatorJoystick.getRawAxis(3));
     } else {
-      manipulator.pushBox(-0.1);
+      manipulator.pushBox(-0.05);
     }
+    if (operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_A)) {
+      manipulator.pushBox(SmartDashboard.getNumber("DB/Slider 0", 0));
+    }
+    if (operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_B)) {
+      presetPosition = 0;
+      talonTip.set(ControlMode.MotionMagic, presetPosition);
+    }
+    if (operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_Y)) {
+      presetPosition = 1100;
+      talonTip.set(ControlMode.MotionMagic, presetPosition);
+    }
+    if (operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_X)) {
+      presetPosition = 2100;
+      talonTip.set(ControlMode.MotionMagic, presetPosition);
+    }
+    if (presetPosition == 0 && talonTip.getSelectedSensorPosition() < 100) {
+      talonTip.set(ControlMode.PercentOutput,0);
+    } 
 
-    if (operatorJoystick.getRawButton(9)) {
-      pcm.openHatchManip();
-    } else {
-      pcm.closeHatchManip();
-    }
+    // if (operatorJoystick.getRawButton(9)) {
+    //   pcm.openHatchManip();
+    // } else {
+    //   pcm.closeHatchManip();
+    // }
 
 
     if (operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_LEFT_BUMPER)) {
@@ -217,13 +233,7 @@ public class Robot extends TimedRobot {
     }
 
 
-    if (operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_A)) {
-      presetPosition = 2100;
-    } else if (operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_B)) {
-      presetPosition = 1000;
-    } else if (operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_Y)) {
-      presetPosition = 0;
-    }
+   
 
     if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_A)) {
       Scheduler.getInstance().add(new MoveMotionMagic(tankDrive, -4300, -4300));
