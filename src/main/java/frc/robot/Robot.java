@@ -17,9 +17,7 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.command.DriveGyroOneSide;
-import frc.command.DriveVoltageTime;
-import frc.command.ParkManeuver;
+import frc.command.MoveMotionMagic;
 import frc.command.Teleop;
 import frc.robot.subsystems.BoxManipulator;
 import frc.robot.subsystems.TankDrive;
@@ -227,7 +225,9 @@ public class Robot extends TimedRobot {
       presetPosition = 0;
     }
 
-
+    if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_A)) {
+      Scheduler.getInstance().add(new MoveMotionMagic(tankDrive, -4300, -4300));
+    }
   }
 
   /**
