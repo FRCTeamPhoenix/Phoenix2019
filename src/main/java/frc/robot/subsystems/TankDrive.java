@@ -89,4 +89,9 @@ public class TankDrive extends Subsystem {
     protected void initDefaultCommand() {
 
     }
+
+    public void setMotionMagic(double left, double right) {
+        talonFL.set(ControlMode.MotionMagic, left);
+        talonFR.set(ControlMode.MotionMagic, right);
+    }
 }
