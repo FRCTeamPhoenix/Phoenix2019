@@ -7,24 +7,24 @@
 
 package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.command.Teleop;
+import frc.command.ParkManeuver;
 import frc.robot.subsystems.BoxManipulator;
 import frc.robot.subsystems.TankDrive;
 import frc.util.CameraControl;
 import frc.util.Constants;
 import frc.util.PixyDriver;
-import frc.robot.Gyro;
+import frc.util.Vision;
 import io.github.pseudoresonance.pixy2api.Pixy2;
+
 /**
  * The VM is configured to automatically run this class, and to call the
  * functions corresponding to each mode, as described in the IterativeRobot
@@ -65,11 +65,6 @@ public class Robot extends TimedRobot {
 
   boolean start = false;
 
-
-  public double targetCenterX = 999;
-  public boolean leftSide = true;
-  public boolean rightSide = false;
-
   Pixy2 pixy;
 
   /**
@@ -93,7 +88,7 @@ public class Robot extends TimedRobot {
 
 
     tankDrive = new TankDrive(talonFL, talonFR, talonBL, talonBR);
-    manipulator = new BoxManipulator(talonIntakeRight, talonIntakeLeft, talonTip, pcm);
+    //manipulator = new BoxManipulator(talonIntakeRight, talonIntakeLeft, talonTip, pcm);
 
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
     m_chooser.addOption("My Auto", kCustomAuto);
@@ -184,8 +179,12 @@ public class Robot extends TimedRobot {
     }
 
 
-    talonTip.set(ControlMode.PercentOutput, -operatorJoystick.getRawAxis(5));
-    talonFR.set(ControlMode.PercentOutput, -operatorJoystick.getRawAxis(1));
+    if(operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_A)) {
+      Scheduler.getInstance().add(new ParkManeuver(this, operatorJoystick, tankDrive));
+    }
+
+    System.out.println(Vision.getHorizontalDistance());
+    Scheduler.getInstance().run();
   }
 
   /**

@@ -9,14 +9,15 @@ package frc.command;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.subsystems.TankDrive;
+import frc.robot.Robot;
 
-public class MoveMotionMagic extends Command {
+public class MoveMotionMagicOneSide extends Command {
 
   public static final double THRESHOLD    = 50;
   public static final int    OSC_TIME_MS  = 100;
 
-  private double left;
-  private double right;
+  private double amount;
+  private String side;
   private boolean holdAfter;
 
   private TankDrive tankDrive;
@@ -24,35 +25,49 @@ public class MoveMotionMagic extends Command {
   private long finishTime;
   private boolean isFinishing;
 
-  public MoveMotionMagic(TankDrive tankDrive, double left, double right, boolean holdAfter) {
+  private Robot robot;
+
+  public MoveMotionMagicOneSide(Robot robot, TankDrive tankDrive, double amount, String side, boolean holdAfter) {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
     this.tankDrive = tankDrive;
-    this.left = left;
-    this.right = right;
+    this.amount = amount;
+    this.side = side;
     this.holdAfter = holdAfter;
+    this.robot = robot;
   }
 
-  public MoveMotionMagic(TankDrive tankDrive, double left, double right) {
+  public MoveMotionMagicOneSide(Robot robot, TankDrive tankDrive, double amount, String side) {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
-    this(tankDrive, left, right, false);
+    this(robot, tankDrive, amount, side, false);
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
     tankDrive.zeroEncoders();
-    tankDrive.setMotionMagic(-left, -right);
+    double x = Math.abs(robot.targetCenterX);
+    amount *= (-0.01809 * x * x + 0.7867 * x + 2.686);
+    System.out.println("amount " + amount);
+    if(side.equals("left"))
+      tankDrive.setMotionMagic(-amount, 0);
+    else if(side.equals("right"))
+      tankDrive.setMotionMagic(0, -amount);
     this.isFinishing = false;
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    boolean startFinishing = Math.abs(tankDrive.talonFL.getSelectedSensorPosition(0) + left) < THRESHOLD || Math.abs(tankDrive.talonFR.getSelectedSensorPosition(0) + right) < THRESHOLD;
+    boolean startFinishing = true;
+    System.out.println("left errror " + Math.abs(tankDrive.talonFL.getSelectedSensorPosition(0) + amount));
+    System.out.println("right errof" + Math.abs(tankDrive.talonFR.getSelectedSensorPosition(0) + amount));
+    if(side.equals("left"))
+      startFinishing = Math.abs(tankDrive.talonFL.getSelectedSensorPosition(0) + amount) < THRESHOLD;
+    else if(side.equals("right"))
+      startFinishing = Math.abs(tankDrive.talonFR.getSelectedSensorPosition(0) + amount) < THRESHOLD;
     if(startFinishing && !isFinishing) {
-      System.out.println("Start finishing");
       finishTime = System.currentTimeMillis();
       isFinishing = true;
     }
@@ -67,7 +82,6 @@ public class MoveMotionMagic extends Command {
   // Called once after isFinished returns true
   @Override
   protected void end() {
-    System.out.println("Finish finishing");
     if(!holdAfter)
       tankDrive.setPercentage(0, 0);
   }

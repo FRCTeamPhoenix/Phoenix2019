@@ -27,11 +27,6 @@ public class TankDrive extends Subsystem {
 
     }
 
-    public void setMotionMagic(double left, double right) {
-        talonFL.set(ControlMode.MotionMagic, left);
-        talonFR.set(ControlMode.MotionMagic, right);
-    }
-
     //configures base talons
     private void configureTalons() {
 
@@ -92,12 +87,8 @@ public class TankDrive extends Subsystem {
 
     public void setMotionMagic(double left, double right) {
 
-
-
-		    talonFL.set(ControlMode.PercentOutput, Math.abs(left) >= Constants.JOYSTICK_DEADZONE ? left : 0);
-        talonFR.set(ControlMode.PercentOutput, Math.abs(right) >= Constants.JOYSTICK_DEADZONE ? right : 0);
-        talonBL.follow(talonFL);
-        talonBR.follow(talonFR);
+		talonFL.set(ControlMode.MotionMagic, left);
+        talonFR.set(ControlMode.MotionMagic, right);
 
     }
     
