@@ -43,13 +43,15 @@ public class MoveMotionMagic extends Command {
   @Override
   protected void initialize() {
     tankDrive.zeroEncoders();
-    tankDrive.setMotionMagic(-left, -right);
+    tankDrive.setMotionMagic(left, right);
     this.isFinishing = false;
+    System.out.println("start motion Magic");
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
+    System.out.println("execute motio Magic");
     boolean startFinishing = Math.abs(tankDrive.talonFL.getSelectedSensorPosition(0) + left) < THRESHOLD || Math.abs(tankDrive.talonFR.getSelectedSensorPosition(0) + right) < THRESHOLD;
     if(startFinishing && !isFinishing) {
       System.out.println("Start finishing");

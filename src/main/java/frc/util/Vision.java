@@ -13,7 +13,9 @@ public class Vision {
 
     public static double getHorizontalDistance() {
         NetworkTable nt = NetworkTableInstance.getDefault().getTable("Vision");
-        return nt.getEntry("HorizontalDistance").getDouble(999);
+        double temp = nt.getEntry("HorizontalDistance").getDouble(999);
+        nt.getEntry("HorizontalDistance").setDouble(999);
+        return temp;
     }
 
     public static double getAngle() {

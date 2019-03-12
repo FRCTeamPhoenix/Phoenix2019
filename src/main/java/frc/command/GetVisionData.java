@@ -22,7 +22,7 @@ public class GetVisionData extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    m_robot.targetCenterX = 11;//Vision.getHorizontalDistance();//Vision.getHorizontalDistance(); //obviously not actually 94 lol
+    m_robot.targetCenterX = Vision.getHorizontalDistance();//Vision.getHorizontalDistance();//Vision.getHorizontalDistance(); //obviously not actually 94 lol
     m_robot.targetDistance = 0;//Vision.getVerticalDistance();//Vision.getVerticalDistance(); //obviously not actually 1248 lol
   }
 

@@ -165,7 +165,7 @@ public class Robot extends TimedRobot {
       pcm.setHighGear(false);
     }
 
-    //Drivetrain
+    // Drivetrain
     if (Math.abs(driverJoystick.getRawAxis(Constants.XBOX_AXIS_LEFT_Y)) > 0.1) {
       talonFR.set(ControlMode.PercentOutput, -driverJoystick.getRawAxis(Constants.XBOX_AXIS_LEFT_Y));
       
@@ -236,8 +236,10 @@ public class Robot extends TimedRobot {
    
 
     if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_A)) {
-      Scheduler.getInstance().add(new MoveMotionMagic(tankDrive, -4300, -4300));
+      Scheduler.getInstance().add(new MoveMotionMagic(tankDrive, -8000, -8000));
     }
+
+    Scheduler.getInstance().run();
   }
 
   /**

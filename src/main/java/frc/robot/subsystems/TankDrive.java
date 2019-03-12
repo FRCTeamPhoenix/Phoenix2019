@@ -71,10 +71,10 @@ public class TankDrive extends Subsystem {
 
     public void zeroEncoders() {
 
-		talonFL.setSelectedSensorPosition(0, Constants.VELOCITY_PID_INDEX, Constants.TIMEOUT);
-		talonFR.setSelectedSensorPosition(0, Constants.VELOCITY_PID_INDEX, Constants.TIMEOUT);
-		talonBL.setSelectedSensorPosition(0, Constants.VELOCITY_PID_INDEX, Constants.TIMEOUT);
-		talonBR.setSelectedSensorPosition(0, Constants.VELOCITY_PID_INDEX, Constants.TIMEOUT);
+		talonFL.setSelectedSensorPosition(0, 0, Constants.TIMEOUT);
+		talonFR.setSelectedSensorPosition(0, 0, Constants.TIMEOUT);
+		talonBL.setSelectedSensorPosition(0, 0, Constants.TIMEOUT);
+		talonBR.setSelectedSensorPosition(0, 0, Constants.TIMEOUT);
     }
 
     public void setPercentage(double left,double right) {
