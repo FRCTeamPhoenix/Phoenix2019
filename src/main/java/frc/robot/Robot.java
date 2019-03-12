@@ -8,21 +8,23 @@
 package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.command.MoveMotionMagic;
-import frc.command.Teleop;
+import frc.command.ParkManeuver;
 import frc.robot.subsystems.BoxManipulator;
 import frc.robot.subsystems.TankDrive;
 import frc.util.CameraControl;
 import frc.util.Constants;
+import frc.util.PixyDriver;
+import io.github.pseudoresonance.pixy2api.Pixy2;
+
 /**
  * The VM is configured to automatically run this class, and to call the
  * functions corresponding to each mode, as described in the IterativeRobot
@@ -62,6 +64,9 @@ public class Robot extends TimedRobot {
   int presetPosition;
 
   boolean start = false;
+
+  Pixy2 pixy;
+
   /**
    * This function is run when the robot is first started up and should be
    * used for any initialization code.
@@ -72,17 +77,18 @@ public class Robot extends TimedRobot {
     driverJoystick = new Joystick(0);
     operatorJoystick = new Joystick(1);
     pcm = new PCMHandler(11);
-    talonFR = new WPI_TalonSRX(Constants.RIGHT_MASTER_TALON_ID);
-    talonFL = new WPI_TalonSRX(Constants.LEFT_MASTER_TALON_ID);
-		talonBR = new WPI_TalonSRX(Constants.RIGHT_SLAVE_TALON_ID);
-    talonBL = new WPI_TalonSRX(Constants.LEFT_SLAVE_TALON_ID);
+
+    talonFR = new WPI_TalonSRX(Constants.LEFT_MASTER_TALON_ID);
+    talonBR = new WPI_TalonSRX(Constants.LEFT_SLAVE_TALON_ID);
     
-    talonIntakeLeft = new WPI_VictorSPX(Constants.VICTOR_INTAKE_LEFT);
-    talonIntakeRight = new WPI_VictorSPX(Constants.VICTOR_INTAKE_RIGHT);
+    talonFL = new WPI_TalonSRX(Constants.RIGHT_MASTER_TALON_ID);
+    talonBL = new WPI_TalonSRX(Constants.RIGHT_SLAVE_TALON_ID);
+    
     talonTip = new WPI_TalonSRX(Constants.TALON_TIP);
 
+
     tankDrive = new TankDrive(talonFL, talonFR, talonBL, talonBR);
-    manipulator = new BoxManipulator(talonIntakeRight, talonIntakeLeft, talonTip, pcm);
+    //manipulator = new BoxManipulator(talonIntakeRight, talonIntakeLeft, talonTip, pcm);
 
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
     m_chooser.addOption("My Auto", kCustomAuto);
@@ -92,6 +98,9 @@ public class Robot extends TimedRobot {
     cameras = new CameraControl(320, 240, 15);
     talonTip.setSensorPhase(true);
     talonTip.setInverted(true);
+
+    PixyDriver.init();
+
   }
 
   /**
@@ -127,6 +136,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
+    PixyDriver.get();
     teleopPeriodic();
   }
 
@@ -135,19 +145,32 @@ public class Robot extends TimedRobot {
     talonBL.follow(talonFL);
     talonBR.follow(talonFR);
     //pcm.turnOn();
-    tankDrive.teleopConfig();
-    //Gyro.calibrate();
-    Command teleop = new Teleop(this, tankDrive, manipulator, driverJoystick, operatorJoystick);
-		//Scheduler.getInstance().add(teleop);
-    Gyro.reset();
+
+    //tankDrive.teleopConfig();
 
     presetPosition = 0;
+    talonBR.follow(talonFR);
+    talonBL.follow(talonFL);
+
+    talonFL.setSelectedSensorPosition(0);
+    talonFR.setSelectedSensorPosition(0);
+
+    tankDrive.teleopConfig();
+    //Gyro.calibrate();
+    Gyro.reset();
     
 
     talonTip.set(ControlMode.PercentOutput,0);
     tankDrive.setPercentage(0, 0);
     talonTip.setSelectedSensorPosition(2100);
     
+    talonFL.setInverted(InvertType.None);
+    talonBL.setInverted(InvertType.FollowMaster);
+
+    talonFR.setInverted(InvertType.InvertMotorOutput);
+    talonBR.setInverted(InvertType.FollowMaster);
+
+    talonTip.setInverted(InvertType.None);
   } 
   /**
    * This function is called periodically during operator control.
@@ -224,21 +247,11 @@ public class Robot extends TimedRobot {
     //   pcm.closeHatchManip();
     // }
 
-
-    if (operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_LEFT_BUMPER)) {
-      manipulator.openManipulator();
-    }
-    if (operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_RIGHT_BUMPER)) {
-      manipulator.closeManipulator();
+    if(operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_A)) {
+      Scheduler.getInstance().add(new ParkManeuver(this, operatorJoystick, tankDrive));
     }
 
-
-   
-
-    if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_A)) {
-      Scheduler.getInstance().add(new MoveMotionMagic(tankDrive, -8000, -8000));
-    }
-
+    //System.out.println(Vision.getHorizontalDistance());
     Scheduler.getInstance().run();
   }
 
