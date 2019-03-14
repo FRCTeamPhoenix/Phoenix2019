@@ -67,9 +67,9 @@ public class Constants {
     public static final int PCM_BOX_MANIPULATOR_LEFT = 0;
     public static final int PCM_BOX_MANIPULATOR_LEFT2 = 1;
 
-    public static final int PCM_BOX_MANIPULATOR_RIGHT = 6;
-    public static final int PCM_BOX_MANIPULATOR_RIGHT2 = 7;
+    public static final int PCM_BOX_MANIPULATOR_RIGHT = 2;
+    public static final int PCM_BOX_MANIPULATOR_RIGHT2 = 6;
 
-    public static final int PCM_HATCH_MANIP = 2;
+    public static final int PCM_HATCH_MANIP = 7;
     
 }

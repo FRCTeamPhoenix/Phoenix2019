@@ -18,7 +18,7 @@ public class ParkManeuver extends CommandGroup {
   public ParkManeuver(Robot robot, Joystick stick, TankDrive tankDrive) {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
-    addSequential(new MoveMotionMagic(tankDrive, -8000, -8000));
+    addSequential(new MoveMotionMagic(robot, tankDrive, -8000, -8000));
     double multiplier = SmartDashboard.getNumber("DB/Slider 0", 0);
     addSequential(new GetVisionData(robot));
     addSequential(new FirstArc(robot, tankDrive, multiplier));

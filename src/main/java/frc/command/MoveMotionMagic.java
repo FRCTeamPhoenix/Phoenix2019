@@ -9,6 +9,7 @@ package frc.command;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.subsystems.TankDrive;
+import frc.robot.Robot;
 
 public class MoveMotionMagic extends Command {
 
@@ -24,19 +25,22 @@ public class MoveMotionMagic extends Command {
   private long finishTime;
   private boolean isFinishing;
 
-  public MoveMotionMagic(TankDrive tankDrive, double left, double right, boolean holdAfter) {
+  private Robot robot;
+
+  public MoveMotionMagic(Robot robot, TankDrive tankDrive, double left, double right, boolean holdAfter) {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
     this.tankDrive = tankDrive;
     this.left = left;
     this.right = right;
     this.holdAfter = holdAfter;
+    this.robot = robot;
   }
 
-  public MoveMotionMagic(TankDrive tankDrive, double left, double right) {
+  public MoveMotionMagic(Robot robot, TankDrive tankDrive, double left, double right) {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
-    this(tankDrive, left, right, false);
+    this(robot, tankDrive, left, right, false);
   }
 
   // Called just before this Command runs the first time
@@ -46,6 +50,7 @@ public class MoveMotionMagic extends Command {
     tankDrive.setMotionMagic(left, right);
     this.isFinishing = false;
     System.out.println("start motion Magic");
+    robot.isCommand = true;
   }
 
   // Called repeatedly when this Command is scheduled to run
@@ -68,6 +73,7 @@ public class MoveMotionMagic extends Command {
   // Called once after isFinished returns true
   @Override
   protected void end() {
+    robot.isCommand = false;
     System.out.println("Finish finishing");
     if(!holdAfter)
       tankDrive.setPercentage(0, 0);

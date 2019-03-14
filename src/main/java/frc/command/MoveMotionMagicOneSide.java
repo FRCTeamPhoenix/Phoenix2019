@@ -55,14 +55,15 @@ public class MoveMotionMagicOneSide extends Command {
     else if(side.equals("right"))
       tankDrive.setMotionMagic(0, -amount);
     this.isFinishing = false;
+    robot.isCommand = true;
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
     boolean startFinishing = true;
-    System.out.println("left errror " + Math.abs(tankDrive.talonFL.getSelectedSensorPosition(0) + amount));
-    System.out.println("right errof" + Math.abs(tankDrive.talonFR.getSelectedSensorPosition(0) + amount));
+    //System.out.println("left errror " + Math.abs(tankDrive.talonFL.getSelectedSensorPosition(0) + amount));
+    //System.out.println("right errof" + Math.abs(tankDrive.talonFR.getSelectedSensorPosition(0) + amount));
     if(side.equals("left"))
       startFinishing = Math.abs(tankDrive.talonFL.getSelectedSensorPosition(0) + amount) < THRESHOLD;
     else if(side.equals("right"))
@@ -82,6 +83,7 @@ public class MoveMotionMagicOneSide extends Command {
   // Called once after isFinished returns true
   @Override
   protected void end() {
+    robot.isCommand = false;
     if(!holdAfter)
       tankDrive.setPercentage(0, 0);
   }
