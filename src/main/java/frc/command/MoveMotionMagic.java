@@ -13,7 +13,7 @@ import frc.robot.Robot;
 
 public class MoveMotionMagic extends Command {
 
-  public static final double THRESHOLD    = 50;
+  public static final double THRESHOLD    = 200;
   public static final int    OSC_TIME_MS  = 100;
 
   private double left;
@@ -56,7 +56,7 @@ public class MoveMotionMagic extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    boolean startFinishing = Math.abs(tankDrive.talonFL.getSelectedSensorPosition(0) + left) < THRESHOLD || Math.abs(tankDrive.talonFR.getSelectedSensorPosition(0) + right) < THRESHOLD;
+    boolean startFinishing = Math.abs(tankDrive.talonFL.getSelectedSensorPosition(0) - left) < THRESHOLD || Math.abs(tankDrive.talonFR.getSelectedSensorPosition(0) - right) < THRESHOLD;
     if(startFinishing && !isFinishing) {
       System.out.println("Start finishing");
       finishTime = System.currentTimeMillis();
