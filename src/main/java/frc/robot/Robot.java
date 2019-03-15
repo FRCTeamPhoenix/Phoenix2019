@@ -236,7 +236,7 @@ public class Robot extends TimedRobot {
       talonTip.set(ControlMode.MotionMagic, presetPosition);
     }
     if (operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_Y)) {
-      presetPosition = (int)SmartDashboard.getNumber("DB/Slider 0", 0);
+      presetPosition = 1300;
       talonTip.set(ControlMode.MotionMagic, presetPosition);
     }
     if (operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_X)) {
@@ -271,6 +271,9 @@ public class Robot extends TimedRobot {
     if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_A)) {
       Scheduler.getInstance().add(new MoveMotionMagic(this, tankDrive, 0, SmartDashboard.getNumber("DB/Slider 2", 0)));
     }
+
+    if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_B))
+      Scheduler.getInstance().add(new MoveMotionMagic(this, tankDrive, 4300, 4300));
 
     //System.out.println(Vision.getHorizontalDistance());
     Scheduler.getInstance().run();
