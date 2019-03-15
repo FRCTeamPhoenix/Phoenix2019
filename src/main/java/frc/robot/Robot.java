@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
@@ -16,6 +17,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.command.MoveMotionMagic;
 import frc.command.ParkManeuver;
 import frc.robot.subsystems.BoxManipulator;
 import frc.robot.subsystems.TankDrive;
@@ -172,15 +174,29 @@ public class Robot extends TimedRobot {
     //talonFR.set(ControlMode.MotionMagic, 5);
     //talonFR.set(ControlMode.PercentOutput, driverJoystick.getRawAxis(Constants.XBOX_AXIS_RIGHT_Y));
     //talonFL.set(ControlMode.PercentOutput, driverJoystick.getRawAxis(Constants.XBOX_AXIS_LEFT_Y));
-    if(operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_X)) {
+    if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_X)) {
       talonFR.setSelectedSensorPosition(0, 0, 10);
       talonFL.setSelectedSensorPosition(0, 0, 10);
       talonTip.setSelectedSensorPosition(0, 0, 10);
+      talonFR.set(ControlMode.PercentOutput, 0);
+      talonFL.set(ControlMode.PercentOutput, 0);
     }
 
 
     if(operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_A)) {
       Scheduler.getInstance().add(new ParkManeuver(this, operatorJoystick, tankDrive));
+    }
+
+    if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_A)) {
+      Scheduler.getInstance().add(new MoveMotionMagic(tankDrive, SmartDashboard.getNumber("DB/Slider 2", 0), SmartDashboard.getNumber("DB/Slider 2", 0)));
+    }
+
+    if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_B)) {
+      talonFR.set(ControlMode.MotionMagic, SmartDashboard.getNumber("DB/Slider 2", 0));
+    }
+
+    if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_Y)) {
+      talonFL.set(ControlMode.MotionMagic, SmartDashboard.getNumber("DB/Slider 2", 0));
     }
 
     System.out.println(Vision.getHorizontalDistance());
