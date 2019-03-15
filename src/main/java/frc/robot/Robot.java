@@ -63,6 +63,7 @@ public class Robot extends TimedRobot {
   CameraControl cameras;
 
   int presetPosition;
+  boolean preset;
 
   boolean start = false;
 
@@ -70,6 +71,7 @@ public class Robot extends TimedRobot {
 
   public boolean isCommand = false;
 
+  int currentCamera = 0;
   /**
    * This function is run when the robot is first started up and should be
    * used for any initialization code.
@@ -183,6 +185,10 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
+    //Switching Camera
+    if (driverJoystick.getRawButton(Constants.XBOX_BUTTON_TWO_WINDOWS)) {
+      cameras.switchCamera();
+    }
 
     if(isCommand) {
       Scheduler.getInstance().run();
@@ -219,12 +225,9 @@ public class Robot extends TimedRobot {
     } else if (operatorJoystick.getRawButton(Constants.LOGITECH_RIGHT_TRIGGER)) {
       manipulator.pushBox(-0.5);
     } else if (Math.abs(operatorJoystick.getRawAxis(3)) > 0.1) {
-         manipulator.pushBox(operatorJoystick.getRawAxis(3));
-    } else {
+         manipulator.pushBox(operatorJoystick.getRawAxis(3) * 0.5);
+    }else {
       manipulator.pushBox(-0.05);
-    }
-    if (operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_A)) {
-      //manipulator.pushBox(SmartDashboard.getNumber("DB/Slider 0", 0));
     }
 
     if(operatorJoystick.getRawButton(10)) {
@@ -233,7 +236,7 @@ public class Robot extends TimedRobot {
 
     if (operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_B)) {
       presetPosition = 0;
-      talonTip.set(ControlMode.MotionMagic, presetPosition);
+      talonTip.set(ControlMode.MotionMagic, 200);
     }
     if (operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_Y)) {
       presetPosition = 1300;
@@ -243,7 +246,7 @@ public class Robot extends TimedRobot {
       presetPosition = 1900;
       talonTip.set(ControlMode.MotionMagic, presetPosition);
     }
-    if (presetPosition == 0 && talonTip.getSelectedSensorPosition() < 150) {
+    if (presetPosition == 0 && talonTip.getSelectedSensorPosition() < 300) {
       talonTip.set(ControlMode.PercentOutput,0);
     } 
 

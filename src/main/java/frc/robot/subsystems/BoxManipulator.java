@@ -123,4 +123,15 @@ public class BoxManipulator extends Subsystem {
 		
 	}
 	
+	public void updatePID() {
+		talonTip.config_kF(PidLoopIndex,SmartDashboard.getNumber("DB/Slider 0", 0), PidTimeOutMs);
+		talonTip.config_kP(PidLoopIndex, SmartDashboard.getNumber("DB/Slider 1", 0), PidTimeOutMs);
+		talonTip.config_kI(PidLoopIndex, SmartDashboard.getNumber("DB/Slider 2", 0), PidTimeOutMs);
+		talonTip.config_kD(PidLoopIndex,SmartDashboard.getNumber("DB/Slider 3", 0), PidTimeOutMs);
+
+		talonTip.config_kF(1, SmartDashboard.getNumber("DB/Slider 0", 0), PidTimeOutMs);
+		talonTip.config_kP(1,SmartDashboard.getNumber("DB/Slider 1", 0), PidTimeOutMs);
+		talonTip.config_kI(1, SmartDashboard.getNumber("DB/Slider 2", 0), PidTimeOutMs);
+		talonTip.config_kD(1, SmartDashboard.getNumber("DB/Slider 3", 0), PidTimeOutMs);
+	}
 }
