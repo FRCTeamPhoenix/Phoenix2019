@@ -66,6 +66,9 @@ public class Robot extends TimedRobot {
   boolean preset;
 
   boolean start = false;
+  int invertDriver = 1;
+  int invertDriverTimer = 0;
+  int switchCameraTimer = 0;
 
   Pixy2 pixy;
 
@@ -135,20 +138,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    teleopInit();
-  }
-
-  /**
-   * This function is called periodically during autonomous.
-   */
-  @Override
-  public void autonomousPeriodic() {
-    PixyDriver.get();
-    teleopPeriodic();
-  }
-
-
-  public void teleopInit() {
     talonBL.follow(talonFL);
     talonBR.follow(talonFR);
     //pcm.turnOn();
@@ -179,21 +168,75 @@ public class Robot extends TimedRobot {
 
     talonTip.setInverted(true);
     talonTip.setSensorPhase(true);
+  }
+
+  /**
+   * This function is called periodically during autonomous.
+   */
+  @Override
+  public void autonomousPeriodic() {
+    
+    teleopPeriodic();
+  }
+
+
+  public void teleopInit() {
+    talonBL.follow(talonFL);
+    talonBR.follow(talonFR);
+    //pcm.turnOn();
+
+    //tankDrive.teleopConfig();
+
+    presetPosition = 0;
+
+
+    talonFL.setSelectedSensorPosition(0);
+    talonFR.setSelectedSensorPosition(0);
+
+    tankDrive.teleopConfig();
+    //Gyro.calibrate();
+    Gyro.reset();
+    
+
+    talonTip.set(ControlMode.PercentOutput,0);
+    tankDrive.setPercentage(0, 0);
+    talonTip.setSelectedSensorPosition(1900, 0, 10);
+    
+    talonFL.setInverted(InvertType.None);
+    talonBL.setInverted(InvertType.FollowMaster);
+
+    talonFR.setInverted(InvertType.InvertMotorOutput);
+    talonBR.setInverted(InvertType.FollowMaster);
+
+    talonTip.setInverted(true);
+    talonTip.setSensorPhase(true);
+    
+    
   } 
   /**
    * This function is called periodically during operator control.
    */
   @Override
   public void teleopPeriodic() {
+    System.out.println(talonTip.getSelectedSensorPosition());
+
+    
+    switchCameraTimer--;
+    invertDriverTimer--;
     //Switching Camera
-    if (driverJoystick.getRawButton(Constants.XBOX_BUTTON_TWO_WINDOWS)) {
+    if (driverJoystick.getRawButton(Constants.XBOX_BUTTON_TWO_WINDOWS) && switchCameraTimer < 0) {
       cameras.switchCamera();
+      switchCameraTimer = 20;
+    }
+    if (driverJoystick.getRawButton(Constants.XBOX_BUTTON_THREE_LINES) && invertDriverTimer < 0) {
+      invertDriver *= -1;
+      invertDriverTimer = 20;
     }
 
-    if(isCommand) {
-      Scheduler.getInstance().run();
-      return;
-    }
+    // if(isCommand) {
+    //   Scheduler.getInstance().run();
+    //   return;
+    // }
 
     if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_LEFT_BUMPER)) {
         pcm.setLowGear(false);
@@ -207,13 +250,13 @@ public class Robot extends TimedRobot {
 
     // Drivetrain
     if (Math.abs(driverJoystick.getRawAxis(Constants.XBOX_AXIS_LEFT_Y)) > 0.1) {
-      talonFR.set(ControlMode.PercentOutput, -driverJoystick.getRawAxis(Constants.XBOX_AXIS_LEFT_Y));
+      talonFR.set(ControlMode.PercentOutput, invertDriver *-driverJoystick.getRawAxis(Constants.XBOX_AXIS_LEFT_Y));
       
     }else{
       talonFR.set(ControlMode.PercentOutput, 0);
     }
     if (Math.abs(driverJoystick.getRawAxis(Constants.XBOX_AXIS_RIGHT_Y)) > 0.1) {
-      talonFL.set(ControlMode.PercentOutput, -driverJoystick.getRawAxis(Constants.XBOX_AXIS_RIGHT_Y));
+      talonFL.set(ControlMode.PercentOutput, invertDriver * -driverJoystick.getRawAxis(Constants.XBOX_AXIS_RIGHT_Y));
       
     }else{
       talonFL.set(ControlMode.PercentOutput, 0);
@@ -225,7 +268,7 @@ public class Robot extends TimedRobot {
     } else if (operatorJoystick.getRawButton(Constants.LOGITECH_RIGHT_TRIGGER)) {
       manipulator.pushBox(-0.5);
     } else if (Math.abs(operatorJoystick.getRawAxis(3)) > 0.1) {
-         manipulator.pushBox(operatorJoystick.getRawAxis(3) * 0.5);
+         manipulator.pushBox(operatorJoystick.getRawAxis(3) * -0.5);
     }else {
       manipulator.pushBox(-0.05);
     }
@@ -243,12 +286,20 @@ public class Robot extends TimedRobot {
       talonTip.set(ControlMode.MotionMagic, presetPosition);
     }
     if (operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_X)) {
-      presetPosition = 1900;
+      presetPosition = 1600;
       talonTip.set(ControlMode.MotionMagic, presetPosition);
     }
     if (presetPosition == 0 && talonTip.getSelectedSensorPosition() < 300) {
       talonTip.set(ControlMode.PercentOutput,0);
+    }
+    if (presetPosition == 1600 && talonTip.getSelectedSensorPosition() > 1500) {
+      talonTip.set(ControlMode.PercentOutput,0);
+    }
+
+    if (operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_A)) {
+      talonTip.set(ControlMode.PercentOutput,0);
     } 
+    
 
     if(Math.abs(operatorJoystick.getRawAxis(1)) > 0.1) {
       talonTip.set(ControlMode.PercentOutput, operatorJoystick.getRawAxis(1));
@@ -267,19 +318,16 @@ public class Robot extends TimedRobot {
       manipulator.openManipulator();
     }
 
-    if(operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_A)) {
-      Scheduler.getInstance().add(new ParkManeuver(this, operatorJoystick, tankDrive));
-    }
+    // if(operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_A)) {
+    //   Scheduler.getInstance().add(new ParkManeuver(this, operatorJoystick, tankDrive));
+    // }
 
-    if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_A)) {
-      Scheduler.getInstance().add(new MoveMotionMagic(this, tankDrive, 0, SmartDashboard.getNumber("DB/Slider 2", 0)));
-    }
+    // if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_A)) {
+    //   Scheduler.getInstance().add(new MoveMotionMagic(this, tankDrive, 0, SmartDashboard.getNumber("DB/Slider 2", 0)));
+    // }
 
     if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_B))
-      Scheduler.getInstance().add(new MoveMotionMagic(this, tankDrive, 4300, 4300));
-
-    //System.out.println(Vision.getHorizontalDistance());
-    Scheduler.getInstance().run();
+      tankDrive.setMotionMagic(4300, 4300);
   }
 
   /**

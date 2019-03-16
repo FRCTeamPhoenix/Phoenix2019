@@ -30,6 +30,7 @@ public class MoveMotionMagic extends Command {
   public MoveMotionMagic(Robot robot, TankDrive tankDrive, double left, double right, boolean holdAfter) {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
+    requires(tankDrive);
     this.tankDrive = tankDrive;
     this.left = left;
     this.right = right;
@@ -83,5 +84,6 @@ public class MoveMotionMagic extends Command {
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
+    end();
   }
 }
