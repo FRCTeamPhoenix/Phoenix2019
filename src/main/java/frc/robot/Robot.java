@@ -157,10 +157,10 @@ public class Robot extends TimedRobot {
     //Gyro.calibrate();
     Gyro.reset();
     
-    talonFL.setInverted(InvertType.None);
+    talonFL.setInverted(InvertType.InvertMotorOutput);
     talonBL.setInverted(InvertType.FollowMaster);
 
-    talonFR.setInverted(InvertType.InvertMotorOutput);
+    talonFR.setInverted(InvertType.None);
     talonBR.setInverted(InvertType.FollowMaster);
 
     talonTip.setInverted(InvertType.None);
@@ -199,7 +199,14 @@ public class Robot extends TimedRobot {
       talonFL.set(ControlMode.MotionMagic, SmartDashboard.getNumber("DB/Slider 2", 0));
     }
 
-    System.out.println(Vision.getHorizontalDistance());
+    if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_LEFT_BUMPER))
+      talonFL.set(ControlMode.PercentOutput, 1);
+
+    if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_RIGHT_BUMPER))
+      talonFR.set(ControlMode.PercentOutput, 1);
+    
+
+    //System.out.println(Vision.getHorizontalDistance());
     Scheduler.getInstance().run();
   }
 
