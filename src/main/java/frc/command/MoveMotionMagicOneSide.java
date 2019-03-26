@@ -65,9 +65,9 @@ public class MoveMotionMagicOneSide extends Command {
     //System.out.println("left errror " + Math.abs(tankDrive.talonFL.getSelectedSensorPosition(0) + amount));
     //System.out.println("right errof" + Math.abs(tankDrive.talonFR.getSelectedSensorPosition(0) + amount));
     if(side.equals("left"))
-      startFinishing = Math.abs(tankDrive.talonFL.getSelectedSensorPosition(0) - amount) < THRESHOLD;
+      startFinishing = Math.abs(tankDrive.talonFL.getSelectedSensorPosition(0) + amount) < THRESHOLD;
     else if(side.equals("right"))
-      startFinishing = Math.abs(tankDrive.talonFR.getSelectedSensorPosition(0) - amount) < THRESHOLD;
+      startFinishing = Math.abs(tankDrive.talonFR.getSelectedSensorPosition(0) + amount) < THRESHOLD;
     if(startFinishing && !isFinishing) {
       finishTime = System.currentTimeMillis();
       isFinishing = true;
