@@ -9,6 +9,7 @@ package frc.command;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.subsystems.TankDrive;
+import frc.util.Constants;
 import frc.robot.Robot;
 
 public class MoveMotionMagicOneSide extends Command {
@@ -77,7 +78,7 @@ public class MoveMotionMagicOneSide extends Command {
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return isFinishing && (System.currentTimeMillis() - finishTime) >= OSC_TIME_MS;
+    return (isFinishing && (System.currentTimeMillis() - finishTime) >= OSC_TIME_MS) || robot.driverJoystick.getRawButton(Constants.XBOX_BUTTON_B);
   }
 
   // Called once after isFinished returns true
