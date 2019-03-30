@@ -19,12 +19,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.command.CargoMode;
 import frc.command.MoveMotionMagic;
-import frc.command.ParkManeuver;
 import frc.robot.subsystems.BoxManipulator;
 import frc.robot.subsystems.TankDrive;
 import frc.util.CameraControl;
 import frc.util.Constants;
-import frc.util.PixyDriver;
+import frc.util.Vision;
 import io.github.pseudoresonance.pixy2api.Pixy2;
 
 /**
@@ -343,6 +342,12 @@ public class Robot extends TimedRobot {
     } else {
       lastInvertDriverPressed = false;
     }
+
+    if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_X)) {
+      Scheduler.getInstance().add(new MoveMotionMagic(this, tankDrive, 8000, 8000));
+    }
+
+    SmartDashboard.putString("DB/String 5", "Vision " + Vision.getHorizontalDistance());
 
   }
 
