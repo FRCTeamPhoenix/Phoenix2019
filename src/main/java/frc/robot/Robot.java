@@ -67,7 +67,7 @@ public class Robot extends TimedRobot {
   boolean preset;
 
   boolean start = false;
-  int invertDriver = 1;
+  int invertDriver = -1;
   boolean lastSwitchCameraPressed = false;
   boolean lastInvertDriverPressed = false;
 
@@ -110,8 +110,22 @@ public class Robot extends TimedRobot {
 
     Gyro.init();
     cameras = new CameraControl(320, 240, 15);
-    talonTip.setSensorPhase(true);
+   
+
+    talonFL.setInverted(InvertType.InvertMotorOutput);
+    talonBL.setInverted(InvertType.FollowMaster);
+
+    talonFR.setInverted(InvertType.None);
+    talonBR.setInverted(InvertType.FollowMaster);
+
     talonTip.setInverted(true);
+    talonTip.setSensorPhase(true);
+
+    
+    talonTip.configPeakCurrentLimit(20);
+    talonTip.configPeakCurrentDuration(1000);
+    talonTip.configContinuousCurrentLimit(10);
+
 
    
 
@@ -142,15 +156,13 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    talonBL.follow(talonFL);
-    talonBR.follow(talonFR);
+
     //pcm.turnOn();
 
     //tankDrive.teleopConfig();
 
     presetPosition = 0;
-    talonBR.follow(talonFR);
-    talonBL.follow(talonFL);
+
 
     talonFL.setSelectedSensorPosition(0);
     talonFR.setSelectedSensorPosition(0);
@@ -164,20 +176,7 @@ public class Robot extends TimedRobot {
     tankDrive.setPercentage(0, 0);
     talonTip.setSelectedSensorPosition(1900, 0, 10);
     
-    talonFL.setInverted(InvertType.InvertMotorOutput);
-    talonBL.setInverted(InvertType.FollowMaster);
-
-    talonFR.setInverted(InvertType.None);
-    talonBR.setInverted(InvertType.FollowMaster);
-
-    talonTip.setInverted(true);
-    talonTip.setSensorPhase(true);
-
     
-    talonTip.configPeakCurrentLimit(20);
-    talonTip.configPeakCurrentDuration(1000);
-    talonTip.configContinuousCurrentLimit(10);
-
   }
 
   /**
@@ -317,7 +316,7 @@ public class Robot extends TimedRobot {
     // }
 
     if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_A)) {
-      Scheduler.getInstance().add(new MoveMotionMagic(this, tankDrive, SmartDashboard.getNumber("DB/Slider 2", 0), SmartDashboard.getNumber("DB/Slider 2", 0)));
+      Scheduler.getInstance().add(new MoveMotionMagic(this, tankDrive, 2200, 2200));
     }
 
     if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_Y)) {

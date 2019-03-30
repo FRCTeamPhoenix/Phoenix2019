@@ -3,6 +3,7 @@ package frc.util;
 
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.cscore.UsbCameraInfo;
+import edu.wpi.cscore.VideoException;
 import edu.wpi.cscore.VideoSink;
 import edu.wpi.first.cameraserver.CameraServer;
 
@@ -22,17 +23,24 @@ public class CameraControl{
 		cameraServer = CameraServer.getInstance();
 		cameraInfo = UsbCamera.enumerateUsbCameras();
 		cameras = new Camera[cameraInfo.length];
-		for (int i = 0; i < cameras.length; i++) {
-			cameras[i] = new Camera(resolutionX, resolutionY, i, fps, cameraServer);
+		try {
+			for (int i = 0; i < cameras.length; i++) {
+				cameras[i] = new Camera(resolutionX, resolutionY, i, fps, cameraServer);
+			}
+			videoSink = cameraServer.getServer();
+			currentCamera = 0;
+			videoSink.setSource(cameras[currentCamera].getCamera());
+		} catch(VideoException e) {
+
 		}
-		videoSink = cameraServer.getServer();
-		currentCamera = 0;
-		videoSink.setSource(cameras[currentCamera].getCamera());
 		
 	}
 	
 
 	public void switchCamera() {
+		if (cameras.length < 2) {
+			return;
+		}
 		currentCamera = (currentCamera + 1) % 2;
 		videoSink.setSource(cameras[currentCamera].getCamera());
 	}

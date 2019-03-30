@@ -50,6 +50,12 @@ public class TankDrive extends Subsystem {
 		talonFR.configPeakOutputForward(1.0, Constants.TIMEOUT);
         talonFR.configPeakOutputReverse(-1.0, Constants.TIMEOUT);
         
+        talonBR.follow(talonFR);
+        talonBL.follow(talonFL);
+        
+        talonFR.configSetParameter(ParamEnum.eOnBoot_BrakeMode, 0.0, 0, 0, Constants.TIMEOUT);
+        talonFL.configSetParameter(ParamEnum.eOnBoot_BrakeMode, 0.0, 0, 0, Constants.TIMEOUT);
+        
     }
 
     public void teleopConfig() {
