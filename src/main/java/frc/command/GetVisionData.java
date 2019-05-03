@@ -25,10 +25,11 @@ public class GetVisionData extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    //m_robot.targetCenterX = Vision.getHorizontalDistance();//Vision.getHorizontalDistance();//Vision.getHorizontalDistance(); //obviously not actually 94 lol
-    m_robot.targetCenterX = SmartDashboard.getNumber("DB/Slider 1", 0);
+    m_robot.targetCenterX = Vision.getVerticalDistance();//Vision.getHorizontalDistance();//Vision.getHorizontalDistance(); //obviously not actually 94 lol
+    //m_robot.targetCenterX = SmartDashboard.getNumber("DB/Slider 1", 0);
     m_robot.targetDistance = 0;//Vision.getVerticalDistance();//Vision.getVerticalDistance(); //obviously not actually 1248 lol
-
+    for(int i=0;i<10;i++)
+    System.out.println("VISION:" + m_robot.targetCenterX);
   }
 
   // Called repeatedly when this Command is scheduled to run

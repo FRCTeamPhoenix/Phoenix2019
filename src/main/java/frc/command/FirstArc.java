@@ -8,6 +8,7 @@
 package frc.command;
 
 import edu.wpi.first.wpilibj.command.ConditionalCommand;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.TankDrive;
 import frc.robot.Robot;
 
@@ -23,6 +24,6 @@ public class FirstArc extends ConditionalCommand {
 
   @Override
   public boolean condition() {
-    return robot.targetCenterX > 0;
+    return robot.targetCenterX > 2;
   }
 }

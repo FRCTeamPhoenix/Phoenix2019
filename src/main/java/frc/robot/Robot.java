@@ -19,12 +19,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.command.CargoMode;
 import frc.command.MoveMotionMagic;
+import frc.command.ParkManeuver;
 import frc.robot.subsystems.BoxManipulator;
 import frc.robot.subsystems.TankDrive;
 import frc.util.CameraControl;
 import frc.util.Constants;
 import frc.util.Vision;
-import io.github.pseudoresonance.pixy2api.Pixy2;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -69,8 +69,6 @@ public class Robot extends TimedRobot {
   int invertDriver = -1;
   boolean lastSwitchCameraPressed = false;
   boolean lastInvertDriverPressed = false;
-
-  Pixy2 pixy;
 
   public boolean isCommand = false;
 
@@ -263,13 +261,16 @@ public class Robot extends TimedRobot {
 
     //Manipulator - LOGITECH
     if (operatorJoystick.getRawButton(Constants.LOGITECH_LEFT_TRIGGER)) {
-      manipulator.pushBox(0.5);
+      manipulator.pushBox(-SmartDashboard.getNumber("DB/Slider 3", 0));
     } else if (operatorJoystick.getRawButton(Constants.LOGITECH_RIGHT_TRIGGER)) {
-      manipulator.pushBox(-0.5);
+      manipulator.pushBox(SmartDashboard.getNumber("DB/Slider 3", 0));
     } else {
-      manipulator.pushBox(-0.05);
+      manipulator.pushBox(0.05);
     }
 
+    if(operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_X)) {
+      Scheduler.getInstance().add(new ParkManeuver(this, operatorJoystick, tankDrive));
+    }
 
     if (operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_A)) {
       presetPosition = 0;

@@ -8,6 +8,7 @@
 package frc.command;
 
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.TankDrive;
 import frc.util.Constants;
 import frc.robot.Robot;
@@ -45,18 +46,25 @@ public class MoveMotionMagicOneSide extends Command {
   }
 
   private double amount(int x) {
-    switch(x) {
-      case 0: return 0;
-      case 2: return 0;
-      case -2: return 0; 
-      case 4: return 0;
-      case -4: return 0;
-      case 6: return 0;
-      case -6: return 0;
-      case 8: return 0;
-      case -8: return 0;
-      case 10: return 0;
-      case -10: return 0;
+    int[] data = {3, -3, 9, -6, -8, 5};
+
+    int d = data[0];
+    int minDist = 9999;
+    for(int i=0;i<data.length;i++) {
+      if(Math.abs(data[i] - x) < minDist) {
+        d = data[i];
+        minDist = Math.abs(data[i] - x);
+      }
+    }
+    System.out.println("d: " + d + " x: " + x);
+    //return Math.abs(SmartDashboard.getNumber("DB/Slider 2", 0));
+    switch(d) {
+      case 3: return 3873;
+      case -3: return 3873;
+      case 9: return 5000;
+      case -6: return 5000;
+      case -8: return 5300;
+      case 5: return 4600;
       default: return 0;
     }
   }
@@ -66,8 +74,8 @@ public class MoveMotionMagicOneSide extends Command {
   protected void initialize() {
     tankDrive.zeroEncoders();
     double x = Math.abs(robot.targetCenterX);
-    amount = amount((int)x - (int)x % 2);
-    //amount *= (-0.01809 * x * x + 0.7867 * x + 2.686);
+    //amount = amount((int)x - (int)x % 2);
+    amount = amount((int)x);
 
     System.out.println("amount " + amount);
     if(side.equals("left"))
