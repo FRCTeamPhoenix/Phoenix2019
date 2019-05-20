@@ -265,12 +265,13 @@ public class Robot extends TimedRobot {
     } else if (operatorJoystick.getRawButton(Constants.LOGITECH_RIGHT_TRIGGER)) {
       manipulator.pushBox(SmartDashboard.getNumber("DB/Slider 3", 0));
     } else {
-      manipulator.pushBox(0.05);
+      manipulator.pushBox(0.00);
     }
 
+    /*auto park
     if(operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_X)) {
       Scheduler.getInstance().add(new ParkManeuver(this, operatorJoystick, tankDrive));
-    }
+    }*/
 
     if (operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_A)) {
       presetPosition = 0;
@@ -293,14 +294,14 @@ public class Robot extends TimedRobot {
     
 
     
-
-    if (operatorJoystick.getRawButton(9)) {
+    //old hatch manipulator
+    /*if (operatorJoystick.getRawButton(9)) {
       pcm.openHatchManip();
     } else if (HatchToggle) {
       pcm.openHatchManip();
     } else {
       pcm.closeHatchManip();
-    }
+    }*/
 
     
     if(operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_LEFT_BUMPER)) {
@@ -348,7 +349,8 @@ public class Robot extends TimedRobot {
       Scheduler.getInstance().add(new MoveMotionMagic(this, tankDrive, 8000, 8000));
     }
 
-    SmartDashboard.putString("DB/String 5", "Vision " + Vision.getHorizontalDistance());
+    //print horizontal data to datatable
+    //SmartDashboard.putString("DB/String 5", "Vision " + Vision.getHorizontalDistance());
 
   }
 

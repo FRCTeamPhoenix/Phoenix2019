@@ -1,7 +1,9 @@
 package frc.robot.subsystems;
 
 import frc.robot.PCMHandler;
+import frc.util.Constants;
 
+import com.ctre.phoenix.ParamEnum;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
@@ -40,7 +42,7 @@ public class BoxManipulator extends Subsystem {
 		talonTip.configPeakOutputForward(1, PidTimeOutMs);
 		talonTip.configPeakOutputReverse(-1, PidTimeOutMs);
 		talonTip.configAllowableClosedloopError(0, PidLoopIndex, PidTimeOutMs);
-		
+		talonTip.configSetParameter(ParamEnum.eOnBoot_BrakeMode, 1.0, 0, 0, Constants.TIMEOUT);
 		// talonTip.config_kF(PidLoopIndex, SmartDashboard.getNumber("DB/Slider 0",0), PidTimeOutMs);
 		// talonTip.config_kP(PidLoopIndex, SmartDashboard.getNumber("DB/Slider 1",0), PidTimeOutMs);
 		// talonTip.config_kI(PidLoopIndex, SmartDashboard.getNumber("DB/Slider 2",0), PidTimeOutMs);
