@@ -273,6 +273,8 @@ public class Robot extends TimedRobot {
       Scheduler.getInstance().add(new ParkManeuver(this, operatorJoystick, tankDrive));
     }*/
 
+    SmartDashboard.putString("DB/String 1", ""+talonTip.getSelectedSensorVelocity());
+
     if (operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_A)) {
       presetPosition = 0;
       preset = true;
@@ -281,7 +283,10 @@ public class Robot extends TimedRobot {
       preset = true;
       presetPosition = 1900;
       talonTip.set(ControlMode.MotionMagic,1650);
-    } else if(Math.abs(operatorJoystick.getRawAxis(1)) > 0.1) {
+    }else if(talonTip.getSelectedSensorPosition()<-900  && operatorJoystick.getRawAxis(1) > 0.1){
+      talonTip.set(ControlMode.PercentOutput, 0.12);
+      System.out.println("Slowing");
+    }else if(Math.abs(operatorJoystick.getRawAxis(1)) > 0.1) {
       preset = false;
       talonTip.set(ControlMode.PercentOutput, -operatorJoystick.getRawAxis(1) * 2 / 3);
     } else if (presetPosition == 0 && talonTip.getSelectedSensorPosition() < 300 && preset) {
