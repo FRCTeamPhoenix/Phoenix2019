@@ -12,6 +12,7 @@ import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -61,6 +62,7 @@ public class Robot extends TimedRobot {
   PCMHandler pcm;
 
   CameraControl cameras;
+  
 
   int presetPosition;
   boolean preset;
@@ -107,7 +109,6 @@ public class Robot extends TimedRobot {
 
     Gyro.init();
     cameras = new CameraControl(320, 240, 15);
-   
 
     talonFL.setInverted(InvertType.InvertMotorOutput);
     talonBL.setInverted(InvertType.FollowMaster);
@@ -122,8 +123,6 @@ public class Robot extends TimedRobot {
     talonTip.configPeakCurrentLimit(20);
     talonTip.configPeakCurrentDuration(1000);
     talonTip.configContinuousCurrentLimit(10);
-
-
    
 
   }
@@ -138,6 +137,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+    cameras.processFrame();
+    
   }
 
   /**
@@ -153,7 +154,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-
     //pcm.turnOn();
 
     //tankDrive.teleopConfig();
@@ -198,7 +198,7 @@ public class Robot extends TimedRobot {
     
     //Switching Camera
     if (driverJoystick.getRawButton(Constants.XBOX_BUTTON_TWO_WINDOWS) && !lastSwitchCameraPressed) {
-      cameras.switchCamera();
+      //cameras.switchCamera();
       
     }
 
@@ -328,8 +328,8 @@ public class Robot extends TimedRobot {
     if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_Y)) {
       Scheduler.getInstance().add(new CargoMode(this, manipulator, driverJoystick, tankDrive));
 
-    }
-    
+    } 
+
     Scheduler.getInstance().run();
 
     if (operatorJoystick.getRawButton(10)) {
