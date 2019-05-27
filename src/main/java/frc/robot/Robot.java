@@ -137,8 +137,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-    cameras.processFrame();
-    
   }
 
   /**
@@ -198,7 +196,7 @@ public class Robot extends TimedRobot {
     
     //Switching Camera
     if (driverJoystick.getRawButton(Constants.XBOX_BUTTON_TWO_WINDOWS) && !lastSwitchCameraPressed) {
-      //cameras.switchCamera();
+      cameras.nextCamera();
       
     }
 
