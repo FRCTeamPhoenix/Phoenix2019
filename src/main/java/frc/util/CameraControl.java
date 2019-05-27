@@ -69,8 +69,9 @@ public class CameraControl{
 					continue;
 				};
 		
-				//process the image
-				Imgproc.line(img, new Point(0, 0), new Point(img.cols(), img.rows()), new Scalar(0, 0, 255), 3, 8);
+				//add an X over the image for positioning purposes
+				Imgproc.line(img, new Point(0, 0), new Point(img.cols(), img.rows()), new Scalar(0, 0, 255), 1, 8);
+				Imgproc.line(img, new Point(0, img.rows()), new Point(img.cols(), 0), new Scalar(0, 0, 255), 1, 8);
 		
 				//send the processed image to the drive station
 				cvSource.putFrame(img);
