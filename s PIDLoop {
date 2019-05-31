@@ -1,0 +1,58 @@
+warning: LF will be replaced by CRLF in src/main/java/frc/util/PIDLoop.java.
+The file will have its original line endings in your working directory.
+[1mdiff --git a/src/main/java/frc/robot/Robot.java b/src/main/java/frc/robot/Robot.java[m
+[1mindex 430bf6e..7fc2b7a 100644[m
+[1m--- a/src/main/java/frc/robot/Robot.java[m
+[1m+++ b/src/main/java/frc/robot/Robot.java[m
+[36m@@ -167,14 +167,13 @@[m [mpublic class Robot extends TimedRobot {[m
+     if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_Y)) {[m
+       Scheduler.getInstance().add(new DriveGyroOneSide(tankDrive, 20, "right"));[m
+     }[m
+[31m-[m
+     if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_TWO_WINDOWS)) {[m
+       Scheduler.getInstance().add(new DriveGyroOneSide(tankDrive, -20, "right"));[m
+     }[m
+ [m
+[31m-    if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_THREE_LINES)) {[m
+[31m-      Gyro.reset();[m
+[31m-    }[m
+[32m+[m[32m    // if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_THREE_LINES)) {[m
+[32m+[m[32m    //   Gyro.reset();[m
+[32m+[m[32m    // }[m
+ [m
+ [m
+     // if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_LEFT_BUMPER)) {[m
+[1mdiff --git a/src/main/java/frc/util/PIDLoop.java b/src/main/java/frc/util/PIDLoop.java[m
+[1mindex 914d232..c446a2f 100644[m
+[1m--- a/src/main/java/frc/util/PIDLoop.java[m
+[1m+++ b/src/main/java/frc/util/PIDLoop.java[m
+[36m@@ -20,10 +20,12 @@[m [mpublic class PIDLoop {[m
+ [m
+   private double target;[m
+ [m
+[32m+[m[32m  private double izone;[m
+[32m+[m
+   private double accum;[m
+   private double lastError = -9999;[m
+ [m
+[31m-  public PIDLoop(double p, double i, double d, double dt, double target) {[m
+[32m+[m[32m  public PIDLoop(double p, double i, double d, double izone, double dt, double target) {[m
+     this.p = p;[m
+     this.i = i;[m
+     this.d = d;[m
+[36m@@ -31,6 +33,7 @@[m [mpublic class PIDLoop {[m
+     this.target = target;[m
+ [m
+     this.accum = 0;[m
+[32m+[m[32m    this.izone = -1;[m
+   }[m
+ [m
+   public double getP() {[m
+[36m@@ -63,6 +66,7 @@[m [mpublic class PIDLoop {[m
+     double p_out = p * error;[m
+ [m
+     accum += error * dt;[m
+[32m+[m[32m    if(izone > 0 && Math.abs(accum) > izone) accum = 0;[m
+     double i_out = i * accum;[m
+ [m
+     double d_out = 0;[m

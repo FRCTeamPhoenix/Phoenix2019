@@ -1,7 +1,9 @@
 package frc.robot.subsystems;
 
 import frc.robot.PCMHandler;
+import frc.util.Constants;
 
+import com.ctre.phoenix.ParamEnum;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
@@ -40,18 +42,16 @@ public class BoxManipulator extends Subsystem {
 		talonTip.configPeakOutputForward(1, PidTimeOutMs);
 		talonTip.configPeakOutputReverse(-1, PidTimeOutMs);
 		talonTip.configAllowableClosedloopError(0, PidLoopIndex, PidTimeOutMs);
-		
-		talonTip.config_kF(PidLoopIndex, SmartDashboard.getNumber("DB/slider 0",0), PidTimeOutMs);
-		talonTip.config_kP(PidLoopIndex, SmartDashboard.getNumber("DB/slider 1",0), PidTimeOutMs);
-		talonTip.config_kI(PidLoopIndex, SmartDashboard.getNumber("DB/slider 2",0), PidTimeOutMs);
-		talonTip.config_kD(PidLoopIndex, SmartDashboard.getNumber("DB/slider 3",0), PidTimeOutMs);
+		talonTip.setSelectedSensorPosition(0);
+		// talonTip.config_kF(PidLoopIndex, SmartDashboard.getNumber("DB/Slider 0",0), PidTimeOutMs);
+		// talonTip.config_kP(PidLoopIndex, SmartDashboard.getNumber("DB/Slider 1",0), PidTimeOutMs);
+		// talonTip.config_kI(PidLoopIndex, SmartDashboard.getNumber("DB/Slider 2",0), PidTimeOutMs);
+		// talonTip.config_kD(PidLoopIndex, SmartDashboard.getNumber("DB/Slider 3",0), PidTimeOutMs);
 
-		talonTip.config_kF(1, SmartDashboard.getNumber("DB/slider 0",0), PidTimeOutMs);
-		talonTip.config_kP(1, SmartDashboard.getNumber("DB/slider 1",0), PidTimeOutMs);
-		talonTip.config_kI(1, SmartDashboard.getNumber("DB/slider 2",0), PidTimeOutMs);
-		talonTip.config_kD(1, SmartDashboard.getNumber("DB/slider 3",0), PidTimeOutMs);
-		
-		this.talonIntakeLeft.follow(this.talonIntakeRight);
+		// talonTip.config_kF(1, SmartDashboard.getNumber("DB/Slider 0",0), PidTimeOutMs);
+		// talonTip.config_kP(1, SmartDashboard.getNumber("DB/Slider 1",0), PidTimeOutMs);
+		// talonTip.config_kI(1, SmartDashboard.getNumber("DB/Slider 2",0), PidTimeOutMs);
+		// talonTip.config_kD(1, SmartDashboard.getNumber("DB/Slider 3",0), PidTimeOutMs);
 
 		//set pid for talon tip
 		
@@ -89,9 +89,8 @@ public class BoxManipulator extends Subsystem {
 	}
 	
 	public void pullBox() {
-		talonIntakeRight.set(ControlMode.PercentOutput, -0.5);
+		talonIntakeRight.set(ControlMode.PercentOutput, 0.5);
 		talonIntakeLeft.set(ControlMode.PercentOutput, 0.5);
-		
 	}
 	
 	public void pushBox() {
@@ -123,6 +122,18 @@ public class BoxManipulator extends Subsystem {
 
 	protected void initDefaultCommand() {
 		// TODO Auto-generated method stub
+		
 	}
 	
+	public void updatePID() {
+		talonTip.config_kF(PidLoopIndex,SmartDashboard.getNumber("DB/Slider 0", 0), PidTimeOutMs);
+		talonTip.config_kP(PidLoopIndex, SmartDashboard.getNumber("DB/Slider 1", 0), PidTimeOutMs);
+		talonTip.config_kI(PidLoopIndex, SmartDashboard.getNumber("DB/Slider 2", 0), PidTimeOutMs);
+		talonTip.config_kD(PidLoopIndex,SmartDashboard.getNumber("DB/Slider 3", 0), PidTimeOutMs);
+
+		talonTip.config_kF(1, SmartDashboard.getNumber("DB/Slider 0", 0), PidTimeOutMs);
+		talonTip.config_kP(1,SmartDashboard.getNumber("DB/Slider 1", 0), PidTimeOutMs);
+		talonTip.config_kI(1, SmartDashboard.getNumber("DB/Slider 2", 0), PidTimeOutMs);
+		talonTip.config_kD(1, SmartDashboard.getNumber("DB/Slider 3", 0), PidTimeOutMs);
+	}
 }

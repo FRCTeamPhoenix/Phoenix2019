@@ -4,13 +4,17 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.subsystems.TankDrive;
 import frc.util.Constants;
+import frc.robot.Robot;
 
 public class Driver extends Command {
     
+    private Robot m_robot;
+
     private Joystick m_driverJoystick;
     private TankDrive m_tankDrive;
 
-    public Driver(TankDrive tankDrive,Joystick driverJoystick) {
+    public Driver(Robot robot, TankDrive tankDrive,Joystick driverJoystick) {
+        m_robot = robot;
         m_tankDrive = tankDrive;
         m_driverJoystick = driverJoystick;
     }

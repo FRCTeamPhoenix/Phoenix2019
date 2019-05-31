@@ -15,6 +15,10 @@ public class Camera{
 		camera.setFPS(fps);
 		camera.setExposureAuto();
 	}
+
+	public UsbCamera getCamera() {
+		return camera;
+	}
 	
 	
 }

@@ -50,6 +50,12 @@ public class TankDrive extends Subsystem {
 		talonFR.configPeakOutputForward(1.0, Constants.TIMEOUT);
         talonFR.configPeakOutputReverse(-1.0, Constants.TIMEOUT);
         
+        talonBR.follow(talonFR);
+        talonBL.follow(talonFL);
+        
+        talonFR.configSetParameter(ParamEnum.eOnBoot_BrakeMode, 0.0, 0, 0, Constants.TIMEOUT);
+        talonFL.configSetParameter(ParamEnum.eOnBoot_BrakeMode, 0.0, 0, 0, Constants.TIMEOUT);
+        
     }
 
     public void teleopConfig() {
@@ -71,22 +77,26 @@ public class TankDrive extends Subsystem {
 
     public void zeroEncoders() {
 
-		talonFL.setSelectedSensorPosition(0, Constants.VELOCITY_PID_INDEX, Constants.TIMEOUT);
-		talonFR.setSelectedSensorPosition(0, Constants.VELOCITY_PID_INDEX, Constants.TIMEOUT);
-		talonBL.setSelectedSensorPosition(0, Constants.VELOCITY_PID_INDEX, Constants.TIMEOUT);
-		talonBR.setSelectedSensorPosition(0, Constants.VELOCITY_PID_INDEX, Constants.TIMEOUT);
+		talonFL.setSelectedSensorPosition(0, 0, Constants.TIMEOUT);
+		talonFR.setSelectedSensorPosition(0, 0, Constants.TIMEOUT);
+		talonBL.setSelectedSensorPosition(0, 0, Constants.TIMEOUT);
+		talonBR.setSelectedSensorPosition(0, 0, Constants.TIMEOUT);
     }
 
     public void setPercentage(double left,double right) {
+
         
 		talonFL.set(ControlMode.PercentOutput, left);
         talonFR.set(ControlMode.PercentOutput, right);
-        talonBL.follow(talonFL);
-        talonBR.follow(talonFR);
 
     }
     
     protected void initDefaultCommand() {
 
+    }
+
+    public void setMotionMagic(double left, double right) {
+        talonFL.set(ControlMode.MotionMagic, left);
+        talonFR.set(ControlMode.MotionMagic, right);
     }
 }

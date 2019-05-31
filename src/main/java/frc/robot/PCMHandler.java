@@ -2,6 +2,8 @@ package frc.robot;
 
 import frc.util.Constants;
 
+
+
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -27,9 +29,9 @@ public class PCMHandler {
 		clawSolRight = new Solenoid(Constants.PCM_CAN_ID,Constants.PCM_BOX_MANIPULATOR_RIGHT);
 		clawSolLeft = new Solenoid(Constants.PCM_CAN_ID,Constants.PCM_BOX_MANIPULATOR_LEFT);
 
-		clawSolRight2 = new Solenoid(Constants.PCM_CAN_ID,1);
-		clawSolLeft2 = new Solenoid(Constants.PCM_CAN_ID,0);
-
+		clawSolRight2 = new Solenoid(Constants.PCM_CAN_ID,Constants.PCM_BOX_MANIPULATOR_RIGHT2);
+		clawSolLeft2 = new Solenoid(Constants.PCM_CAN_ID,Constants.PCM_BOX_MANIPULATOR_LEFT2);
+		
 	}
 	
 	public void turnOn(){
@@ -54,23 +56,18 @@ public class PCMHandler {
 	}
 
 	public void openManipulator() {
-		clawSolLeft.set(true);
+		clawSolLeft.set(false);
 		clawSolRight.set(false);
-		clawSolLeft2.set(false);
+		clawSolLeft2.set(true);
 		clawSolRight2.set(true);
 	}
 
 	public void closeManipulator() {
-		clawSolLeft.set(false);
+		clawSolLeft.set(true);
 		clawSolRight.set(true);
-		clawSolLeft2.set(true);
+		clawSolLeft2.set(false);
 		clawSolRight2.set(false);
 	}
-
-
-	
-	
-
 
 	
 }
