@@ -42,6 +42,7 @@ public class BoxManipulator extends Subsystem {
 		talonTip.configPeakOutputForward(1, PidTimeOutMs);
 		talonTip.configPeakOutputReverse(-1, PidTimeOutMs);
 		talonTip.configAllowableClosedloopError(0, PidLoopIndex, PidTimeOutMs);
+		talonTip.setSelectedSensorPosition(0);
 		// talonTip.config_kF(PidLoopIndex, SmartDashboard.getNumber("DB/Slider 0",0), PidTimeOutMs);
 		// talonTip.config_kP(PidLoopIndex, SmartDashboard.getNumber("DB/Slider 1",0), PidTimeOutMs);
 		// talonTip.config_kI(PidLoopIndex, SmartDashboard.getNumber("DB/Slider 2",0), PidTimeOutMs);

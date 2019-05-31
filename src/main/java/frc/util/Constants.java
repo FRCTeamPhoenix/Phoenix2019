@@ -10,6 +10,8 @@ public class Constants {
 
     public static final int TALON_TIP = 5;
 
+    public static final int TALON_HATCH_MANIP = 8;
+
     public static final int VICTOR_INTAKE_RIGHT = 7;
 	public static final int VICTOR_INTAKE_LEFT = 6;
 	
@@ -69,7 +71,5 @@ public class Constants {
 
     public static final int PCM_BOX_MANIPULATOR_RIGHT = 2;
     public static final int PCM_BOX_MANIPULATOR_RIGHT2 = 6;
-
-    public static final int PCM_HATCH_MANIP = 7;
     
 }

@@ -13,6 +13,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -51,6 +52,7 @@ public class Robot extends TimedRobot {
   WPI_VictorSPX talonIntakeLeft;
   WPI_VictorSPX talonIntakeRight;
   WPI_TalonSRX talonTip;
+  WPI_TalonSRX talonHatchManip;
 
   TankDrive tankDrive;
 
@@ -63,6 +65,7 @@ public class Robot extends TimedRobot {
 
   CameraControl cameras;
   
+  DigitalInput limitSwitch;
 
   int presetPosition;
   boolean preset;
@@ -73,9 +76,6 @@ public class Robot extends TimedRobot {
   boolean lastInvertDriverPressed = false;
 
   public boolean isCommand = false;
-
-  public boolean HatchToggle = false;
-  public boolean lastHatchTogglePressed = false;
 
   int currentCamera = 0;
   /**
@@ -96,6 +96,9 @@ public class Robot extends TimedRobot {
     talonBL = new WPI_TalonSRX(Constants.RIGHT_SLAVE_TALON_ID);
     
     talonTip = new WPI_TalonSRX(Constants.TALON_TIP);
+
+    talonHatchManip = new WPI_TalonSRX(Constants.TALON_HATCH_MANIP);
+    talonHatchManip.setSelectedSensorPosition(0);
 
     talonIntakeLeft = new WPI_VictorSPX(6);
     talonIntakeRight = new WPI_VictorSPX(7);
@@ -124,6 +127,7 @@ public class Robot extends TimedRobot {
     talonTip.configPeakCurrentDuration(1000);
     talonTip.configContinuousCurrentLimit(10);
    
+    limitSwitch = new DigitalInput(9);
 
   }
 
@@ -205,10 +209,6 @@ public class Robot extends TimedRobot {
       
     }
 
-    if (operatorJoystick.getRawButton(10) && !lastHatchTogglePressed) {
-      HatchToggle = !HatchToggle;
-    }
-
     // if(isCommand) {
     //   Scheduler.getInstance().run();
     //   return;
@@ -259,11 +259,11 @@ public class Robot extends TimedRobot {
 
     //Manipulator - LOGITECH
     if (operatorJoystick.getRawButton(Constants.LOGITECH_LEFT_TRIGGER)) {
-      manipulator.pushBox(-SmartDashboard.getNumber("DB/Slider 3", 0));
+      manipulator.pushBox(-0.3);
     } else if (operatorJoystick.getRawButton(Constants.LOGITECH_RIGHT_TRIGGER)) {
-      manipulator.pushBox(SmartDashboard.getNumber("DB/Slider 3", 0));
+      manipulator.pushBox(0.3);
     } else {
-      manipulator.pushBox(0.00);
+      manipulator.pushBox(0.05);
     }
 
     /*auto park
@@ -296,16 +296,19 @@ public class Robot extends TimedRobot {
     }
     
 
-    
-    //old hatch manipulator
-    /*if (operatorJoystick.getRawButton(9)) {
-      pcm.openHatchManip();
-    } else if (HatchToggle) {
-      pcm.openHatchManip();
-    } else {
-      pcm.closeHatchManip();
-    }*/
 
+    //lock in hatch if up is pressed
+    int povValue = operatorJoystick.getPOV();
+    if(povValue == 0 || povValue == 45 || povValue == 315){
+      talonHatchManip.set(ControlMode.PercentOutput, -0.5);
+    }//release hatch if down and encoder value is not zero and limit switch is not triggered
+    else if(povValue == 180 || povValue == 135 || povValue == 225){ 
+      talonHatchManip.set(ControlMode.PercentOutput, 0.1);
+    }else if(talonHatchManip.getSelectedSensorPosition() < -800 && talonHatchManip.getSelectedSensorPosition() > -1000){
+      talonHatchManip.set(ControlMode.PercentOutput, -0.2);
+    }else{
+      talonHatchManip.set(ControlMode.PercentOutput, 0.0);
+    }
     
     if(operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_LEFT_BUMPER)) {
       manipulator.closeManipulator();
@@ -329,12 +332,6 @@ public class Robot extends TimedRobot {
     } 
 
     Scheduler.getInstance().run();
-
-    if (operatorJoystick.getRawButton(10)) {
-      lastHatchTogglePressed = true;
-    } else {
-      lastHatchTogglePressed = false;
-    }
 
     if (driverJoystick.getRawButton(Constants.XBOX_BUTTON_TWO_WINDOWS)) {
       lastSwitchCameraPressed = true;
