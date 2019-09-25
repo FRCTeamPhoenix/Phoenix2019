@@ -279,7 +279,6 @@ public class Robot extends TimedRobot {
 
     if(talonTip.getSelectedSensorPosition()<-900  && operatorJoystick.getRawAxis(1) > 0.1){
       talonTip.set(ControlMode.PercentOutput, 0.12);
-      System.out.println("Slowing");
     }else if(Math.abs(operatorJoystick.getRawAxis(1)) > 0.1) {
       preset = false;
       talonTip.set(ControlMode.PercentOutput, -operatorJoystick.getRawAxis(1) * 2 / 3);
