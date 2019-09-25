@@ -122,10 +122,14 @@ public class Robot extends TimedRobot {
     talonTip.setInverted(true);
     talonTip.setSensorPhase(true);
 
+    //limit to 18 amps immediately
+    talonTip.configPeakCurrentDuration(0);
+    talonTip.configContinuousCurrentLimit(18);
+
+    //limit the hath manipulator to 18 amps
+    talonHatchManip.configContinuousCurrentLimit(18);
+    talonHatchManip.configPeakCurrentDuration(0);
     
-    talonTip.configPeakCurrentLimit(20);
-    talonTip.configPeakCurrentDuration(1000);
-    talonTip.configContinuousCurrentLimit(10);
    
     limitSwitch = new DigitalInput(9);
 
@@ -263,7 +267,7 @@ public class Robot extends TimedRobot {
     } else if (operatorJoystick.getRawButton(Constants.LOGITECH_RIGHT_TRIGGER)) {
       manipulator.pushBox(0.3);
     } else {
-      manipulator.pushBox(0.05);
+      manipulator.pushBox(0.07);
     }
 
     /*auto park
@@ -273,15 +277,7 @@ public class Robot extends TimedRobot {
 
     SmartDashboard.putString("DB/String 1", ""+talonTip.getSelectedSensorVelocity());
 
-    if (operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_A)) {
-      presetPosition = 0;
-      preset = true;
-      talonTip.set(ControlMode.MotionMagic,200);
-    } else if (operatorJoystick.getRawButton(Constants.LOGITECH_BUTTON_B)) {
-      preset = true;
-      presetPosition = 1900;
-      talonTip.set(ControlMode.MotionMagic,1650);
-    }else if(talonTip.getSelectedSensorPosition()<-900  && operatorJoystick.getRawAxis(1) > 0.1){
+    if(talonTip.getSelectedSensorPosition()<-900  && operatorJoystick.getRawAxis(1) > 0.1){
       talonTip.set(ControlMode.PercentOutput, 0.12);
       System.out.println("Slowing");
     }else if(Math.abs(operatorJoystick.getRawAxis(1)) > 0.1) {
@@ -321,15 +317,6 @@ public class Robot extends TimedRobot {
     // if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_X)) {
     //   Scheduler.getInstance().add(new ParkManeuver(this, operatorJoystick, tankDrive));
     // }
-
-    if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_A)) {
-      Scheduler.getInstance().add(new MoveMotionMagic(this, tankDrive, 2200, 2200));
-    }
-
-    if(driverJoystick.getRawButton(Constants.XBOX_BUTTON_Y)) {
-      Scheduler.getInstance().add(new CargoMode(this, manipulator, driverJoystick, tankDrive));
-
-    } 
 
     Scheduler.getInstance().run();
 
